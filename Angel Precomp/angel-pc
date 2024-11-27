@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+
+import re
+import sys
+
+def is_whitespc(character):
+    if character == "\t":
+        return True
+    if character == "\n":
+        return True
+    if character == " ":
+        return True
+    return False
+
+# Regular expression to match namespaces outside string literals
+def replace_namespace_outside_strings(code):
+    # Regex to split between strings and non-string parts
+    pattern = r'(".*?(?<!\\)"|\b\w+::)'
+    
+    def replacer(match):
+        part = match.group(1)
+        if part.startswith('"'):  # Skip string literals
+            return part
+        else:  # Replace namespace occurrences
+            return re.sub(r'(\b\w+)::', r'__00_\1_00__', part)
+    
+    return re.sub(pattern, replacer, code, flags=re.DOTALL)
+
+# Function to convert @function calls to nested calls
+def convert_chained_calls(code):
+    ################################################
+    def get_at_sym_loc(code_internal):
+        #Locate all valid @
+        at_locations = []
+        
+        #This FSM works but you can revese engineer if you want haha
+        i = 0
+        fsm_state = 0
+        while i < len(code_internal):
+            if fsm_state == 0:
+                if code_internal[i] == '"':
+                    fsm_state = 1
+                elif code_internal[i] == "'":
+                    fsm_state = 2
+                elif code[i] == "@":
+                    at_locations.append(i)
+            elif fsm_state == 1:
+                if code_internal[i] == '"':
+                    fsm_state = 0
+                elif code_internal[i] == '\\':
+                    fsm_state = 3  
+            elif fsm_state == 2:
+                if code_internal[i] == "'":
+                    fsm_state = 0
+                elif code_internal[i] == '\\':
+                    fsm_state = 4
+            elif fsm_state == 3: 
+                fsm_state = 1
+            elif fsm_state == 4: 
+                fsm_state = 2
+            i += 1
+        return at_locations
+    ################################################
+    def sort_out_first_at(code_internal, first_at):
+        #print("First at" + str(first_at))
+    
+        beginLHS = first_at - 1
+        while is_whitespc(code_internal[beginLHS]):
+            beginLHS -= 1
+        beginLHS -= 1
+        
+        while beginLHS > 0 and not is_whitespc(code_internal[beginLHS]):
+            beginLHS -= 1
+        if is_whitespc(code_internal[beginLHS]):
+            beginLHS += 1
+        
+        endLHS = first_at-1
+        while is_whitespc(code_internal[endLHS]):
+            endLHS -= 1
+        endLHS += 1
+        #print(f"<{beginLHS},{first_at-1}>")
+        LHS = code_internal[beginLHS:endLHS]
+        #print("LHS: " + LHS)
+        
+        endToken = first_at
+        while endToken < len(code_internal) and code_internal[endToken] != '(':
+            endToken += 1
+        
+        #print(f"<{first_at+1},{endToken}>")
+        TOKEN = code_internal[first_at + 1:endToken].strip()
+        #print("TOKEN: " + TOKEN)
+        
+        ##Now the hard bit => The inside of the brackets
+        #We will assume the code is written correctly for now, so we are assuming there is a "("
+        
+        endContent = endToken + 1 # lalala([d]adada
+        bracket_lvl = 1
+        
+        has_comma = False
+        
+        while bracket_lvl > 0 and endContent < len(code_internal):
+            if code_internal[endContent] == ",":
+                has_comma = True
+            
+            if code_internal[endContent] == '(':
+                bracket_lvl += 1
+            elif code_internal[endContent] == ')':
+                bracket_lvl -= 1
+            elif code_internal[endContent] == "'":
+                endContent += 1
+                while code_internal[endContent] != "'":
+                    if  code_internal[endContent] == "\\":
+                        endContent += 1
+                    endContent += 1
+            elif code_internal[endContent] == '"':
+                endContent += 1
+                while code_internal[endContent] != '"':
+                    #print("<<<< " + code_internal[endContent])
+                    if code_internal[endContent] == "\\":
+                        endContent += 1
+                    endContent += 1
+            endContent += 1
+        
+        #print(f"<{endToken + 1},{endContent - 1}>")
+        CONTENT = code_internal[endToken + 1:endContent - 1]
+        #print("CONTENT: " + CONTENT)
+        
+        return code_internal[:beginLHS] + \
+            TOKEN + "(" + LHS + ("," if has_comma else "") + CONTENT + ")" \
+            + code_internal[endContent:]
+    ################################################
+    all_the_ats = get_at_sym_loc(code)
+    
+    while all_the_ats:
+        code = sort_out_first_at(code , all_the_ats[0])
+        all_the_ats = get_at_sym_loc(code)
+        
+    return code
+################################################
+################################################
+################################################
+################################################
+################################################
+################################################
+  
+if len(sys.argv) == 0:
+    print("Angel PreCompiler cannot work if you don't give me a source file :(")
+    sys.exit()
+
+filename = sys.argv[len(sys.argv) - 1]
+
+try:
+    with open(filename, 'r') as file:
+        og_code = file.read()
+        # Replace "namespace::" with "__namespace__"
+        # \b(\w+):: captures any valid identifier (letters, numbers, underscores) followed by ::
+        transformed_code = replace_namespace_outside_strings(og_code)
+        transformed_code = convert_chained_calls(transformed_code)
+        #print(og_code)
+       # print("______")
+        print(transformed_code)
+except FileNotFoundError:
+    print("The file does not exist!")
+except IOError:
+    print("An error occurred while loading the file!")
