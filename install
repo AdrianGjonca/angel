@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+echo "Installing Angel Development Tools by Adrian Gjonca"
+echo "To uninstall just delete the files:"
+
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+
+echo "    /bin/angel-pc"
+cp "$SCRIPT_DIR""/Angel Precomp/angel-pc" "/bin/angel-pc"
+chmod +x "/bin/angel-pc"
+
+echo "    /bin/angel-bd"
+cp "$SCRIPT_DIR""/Angel Builder/angel-bd" "/bin/angel-bd"
+chmod +x "/bin/angel-bd"
+
+echo ""
