@@ -1,2 +1,2 @@
-export char * getText();
+char * getText();
 

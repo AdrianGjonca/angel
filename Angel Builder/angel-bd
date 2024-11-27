@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-#TODO Entire thing
-
 import sys
 import os
 import shutil
@@ -48,6 +46,8 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("         (regular lines show the files and directories you write yourself)")
 	print("")
 	sys.exit()
+
+
 ################################################
 ##
 ## 
@@ -208,6 +208,64 @@ for command in commands_to_execute:
 	result = subprocess.run(command, shell=True, capture_output=True, text=True)
 	print("----Precompiled " + og_files[i] + " to " + og_to_gen[og_files[i]])
 	i += 1
+
+
+#
+#Create name for the executable
+#
+executable_file = os.path.join(project_path, "executable")
+
+if os.name == "nt":
+	executable_file += ".exe"
+
+
+#
+#Checks if gcc is installed
+#
+if not shutil.which("gcc"):
+    print("Build Failed")
+    print("GCC is not installed or installed incorrectly")
+    print("Please (re)install GCC!")
+    sys.exit()
+
+
+#
+#Create the gcc command we shall execute
+#
+compile_command = "gcc -I"
+compile_command += generated_headers_folder
+compile_command += " -o "
+compile_command += executable_file
+compile_command += " "
+for the_src_file in generated_src_files:
+	compile_command += the_src_file + " "
+
+#
+#Remove old executable
+#
+if os.path.exists(executable_file):
+	print("Deleting old executable file")
+	os.remove(executable_file)
+
+#
+#Compile
+#
+
+print("Calling GCC to compile")
+result = subprocess.run(compile_command, shell=True, capture_output=True, text=True)
+print("GCC Output :", result.stdout)
+print("GCC Error  :", result.stderr)
+
+#
+#Summary
+#
+
+print("")
+if os.path.exists(executable_file):
+	print("Compilation appears to have been a SUCCESS!")
+else:
+	print("Compilation appears to have FAILED!")
+print("")
 
 
 

@@ -3,6 +3,40 @@
 import re
 import sys
 
+if len(sys.argv) < 2:
+    print("Angel PreCompiler cannot work if you don't give me a source file :(")
+    sys.exit()
+
+filename = sys.argv[1]
+should_outputToFile = "-o" in sys.argv
+
+if ("-h" in sys.argv) or ("--help" in sys.argv):
+    print("This is the Angel PreCompiler command")
+    print("Use this to build precompile your Angel-DT source files")
+    print("")
+    print("Syntax:")    
+    print("         angel-pc [input-file-path]")
+    print("             => Will output to console")
+    print("         angel-pc [input-file-path] -o [output-file-path]")
+    print("             => Will output to file")
+    print("")
+    print("Note:")
+    print("         This script is called by Angel BuilDer (angel-bd)")
+    print("         We recomend you use the Angel Builder to build your")
+    print("         projects. Use this seperately if you know what you")
+    print("         are doing. :)")
+    print("")
+    sys.exit()
+
+
+################################################
+##
+## 
+## Functions
+## 
+##
+################################################
+
 ###
 # Simply checks if a character is a whitespace
 # whitespace = {'\t', '\n', ' '}
@@ -168,16 +202,6 @@ def handle_chains(code):
 ## 
 ##
 ################################################
-
-if len(sys.argv) < 2:
-    print("Angel PreCompiler cannot work if you don't give me a source file :(")
-    sys.exit()
-
-filename = sys.argv[1]
-
-should_outputToFile = "-o" in sys.argv
-
-#TODO -h/--help
 
 if should_outputToFile:
     if len(sys.argv) < 4:
