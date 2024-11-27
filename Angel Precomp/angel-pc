@@ -3,6 +3,13 @@
 import re
 import sys
 
+###
+# Simply checks if a character is a whitespace
+# whitespace = {'\t', '\n', ' '}
+###
+# character : char -> the character in question
+# ~return~ : bool -> true if is whitespace, false if not
+###
 def is_whitespc(character):
     if character == "\t":
         return True
@@ -12,8 +19,17 @@ def is_whitespc(character):
         return True
     return False
 
-# Regular expression to match namespaces outside string literals
-def replace_namespace_outside_strings(code):
+###
+# (Disclaimer CHAT_GPT generated this :/)
+# Precompiles the namespaces
+# str::cpy -> str_0cpy
+# Designed to be the same length to make it understandable
+# REMEMBER TO BE CONSISE, NO MORE THAT 31 CHARS ARE SIGNIFICANT IN C.
+###
+# code : string -> the original code
+# ~return~ : string -> the resultant code
+###
+def handle_namespaces(code):
     # Regex to split between strings and non-string parts
     pattern = r'(".*?(?<!\\)"|\b\w+::)'
     
@@ -22,12 +38,18 @@ def replace_namespace_outside_strings(code):
         if part.startswith('"'):  # Skip string literals
             return part
         else:  # Replace namespace occurrences
-            return re.sub(r'(\b\w+)::', r'__00_\1_00__', part)
+            return re.sub(r'(\b\w+)::', r'\1_0', part)
     
     return re.sub(pattern, replacer, code, flags=re.DOTALL)
 
-# Function to convert @function calls to nested calls
-def convert_chained_calls(code):
+###
+# Handles chained calls - e.g. mystring@tocapital()@replace("a", "b")
+#   The above becomes -> replace(tocapital(mystring), "a", "b")
+###
+# code : string -> the original code
+# ~return~ : string -> the resultant code
+###
+def handle_chains(code):
     ################################################
     def get_at_sym_loc(code_internal):
         #Locate all valid @
@@ -128,7 +150,9 @@ def convert_chained_calls(code):
         return code_internal[:beginLHS] + \
             TOKEN + "(" + LHS + ("," if has_comma else "") + CONTENT + ")" \
             + code_internal[endContent:]
+    
     ################################################
+    
     all_the_ats = get_at_sym_loc(code)
     
     while all_the_ats:
@@ -136,11 +160,13 @@ def convert_chained_calls(code):
         all_the_ats = get_at_sym_loc(code)
         
     return code
+    
 ################################################
-################################################
-################################################
-################################################
-################################################
+##
+## 
+## Main program
+## 
+##
 ################################################
   
 if len(sys.argv) == 0:
@@ -154,8 +180,8 @@ try:
         og_code = file.read()
         # Replace "namespace::" with "__namespace__"
         # \b(\w+):: captures any valid identifier (letters, numbers, underscores) followed by ::
-        transformed_code = replace_namespace_outside_strings(og_code)
-        transformed_code = convert_chained_calls(transformed_code)
+        transformed_code = handle_namespaces(og_code)
+        transformed_code = handle_chains(transformed_code)
         #print(og_code)
        # print("______")
         print(transformed_code)
@@ -163,3 +189,6 @@ except FileNotFoundError:
     print("The file does not exist!")
 except IOError:
     print("An error occurred while loading the file!")
+
+
+

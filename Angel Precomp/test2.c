@@ -12,6 +12,6 @@ test = test @
        tocap();
 
 //Test 3
-test =	test			@
-	replace("a", "c")	@
-	tocap()			;
+test = test			@ 
+       replace("a","c") 	@
+       tocap()			;
