@@ -168,7 +168,7 @@ def handle_chains(code):
 ## 
 ##
 ################################################
-  
+
 if len(sys.argv) < 2:
     print("Angel PreCompiler cannot work if you don't give me a source file :(")
     sys.exit()
@@ -176,6 +176,8 @@ if len(sys.argv) < 2:
 filename = sys.argv[1]
 
 should_outputToFile = "-o" in sys.argv
+
+#TODO -h/--help
 
 if should_outputToFile:
     if len(sys.argv) < 4:
@@ -185,12 +187,8 @@ if should_outputToFile:
 try:
     with open(filename, 'r') as file:
         og_code = file.read()
-        # Replace "namespace::" with "__namespace__"
-        # \b(\w+):: captures any valid identifier (letters, numbers, underscores) followed by ::
         transformed_code = handle_namespaces(og_code)
         transformed_code = handle_chains(transformed_code)
-        #print(og_code)
-        #print("______")
         if should_outputToFile:
             with open(sys.argv[len(sys.argv) - 1], "w") as fileout:
                 print(transformed_code, file=fileout)
