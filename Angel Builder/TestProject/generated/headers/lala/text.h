@@ -1,0 +1,2 @@
+export char * getText();
+
