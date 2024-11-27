@@ -169,11 +169,18 @@ def handle_chains(code):
 ##
 ################################################
   
-if len(sys.argv) == 0:
+if len(sys.argv) < 2:
     print("Angel PreCompiler cannot work if you don't give me a source file :(")
     sys.exit()
 
-filename = sys.argv[len(sys.argv) - 1]
+filename = sys.argv[1]
+
+should_outputToFile = "-o" in sys.argv
+
+if should_outputToFile:
+    if len(sys.argv) < 4:
+        print("Angel PreCompiler cannot output to file if you don't tell me where to output :(")
+        sys.exit()
 
 try:
     with open(filename, 'r') as file:
@@ -183,8 +190,12 @@ try:
         transformed_code = handle_namespaces(og_code)
         transformed_code = handle_chains(transformed_code)
         #print(og_code)
-       # print("______")
-        print(transformed_code)
+        #print("______")
+        if should_outputToFile:
+            with open(sys.argv[len(sys.argv) - 1], "w") as fileout:
+                print(transformed_code, file=fileout)
+        else:
+            print(transformed_code)
 except FileNotFoundError:
     print("The file does not exist!")
 except IOError:
