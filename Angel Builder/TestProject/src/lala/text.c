@@ -1,4 +1,4 @@
-#include"lala/text.h"
+#include<lala/text.h>
 
 char * text = "Hello World!\n";
 

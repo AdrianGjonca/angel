@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 
+
+
+#TODO implement project settings system
+
+
+
 import sys
 import os
 import shutil
@@ -27,8 +33,20 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("         |     source files (*.c) [can include those in nested subdirs]")
 	print("         | ")
 	print("         |__headers/ ")
+	print("         |     |")
+	print("         |     header files (*.h) [can include those in nested subdirs]")
+	print("         | ")
+	print("         |__libraries/")
+	print("         |     |")
+	print("         |     conatins any not-os-installed Static or Shared libraries")
+	print("         |     (the latter is unrecomended as Shared libraries still")
+	print("         |      need to be installed on the os level inorder to even")
+	print("         |      execute the program on your machine)")
+	print("         | ")
+	print("         |__library_headers/")
 	print("         :     |")
-	print("         :     header files (*.h) [can include those in nested subdirs]")
+	print("         :     conatins any headers pertaining to the not-os-installed")
+	print("         :     Static or Shared libraries.")
 	print("         : ")
 	print("         :..generated/ ")
 	print("         :     :")
@@ -104,7 +122,14 @@ contains_src = \
 contains_headers = \
 	"headers" in pr_folders_nameonly
 
-contains_all = contains_src and contains_headers
+contains_libs = \
+	"libraries" in pr_folders_nameonly
+
+contains_libheads = \
+	"library_headers" in pr_folders_nameonly
+
+contains_all = contains_src  and contains_headers and \
+               contains_libs and contains_libheads
 
 if not contains_all:
 	print("Build Failed")
@@ -112,9 +137,13 @@ if not contains_all:
 		print("Missing src/ folder (angel-bd --help for info)")
 	if not contains_headers:
 		print("Missing headers/ folder (angel-bd --help for info)")
+	if not contains_libs:
+		print("Missing libraries/ folder (angel-bd --help for info)")
+	if not contains_libheads:
+		print("Missing library_headers/ folder (angel-bd --help for info)")
 	sys.exit()
 else:
-	print("src/ and headers/ folders found")
+	print("src/, headers/, libraries/ and library_headers/ folders found!")
 
 
 #
@@ -122,19 +151,26 @@ else:
 #
 src_files = []
 header_files = []
+libheader_files = []
 
 src_folderPath = os.path.join(project_path, "src")
 headers_folderPath = os.path.join(project_path, "headers")
+lib_folderPath = os.path.join(project_path, "libraries")
+libhead_folderPath = os.path.join(project_path, "library_headers")
 
 src_files = get_all_file_paths(src_folderPath)
 header_files = get_all_file_paths(headers_folderPath)
-og_files = src_files + header_files
+libhead_files = get_all_file_paths(libhead_folderPath)
+
+og_files = src_files + header_files + libhead_files
 
 rel_src_files = [os.path.relpath(src_file, src_folderPath) \
                  for src_file in src_files]
 rel_header_files = [os.path.relpath(header_file, headers_folderPath) \
                     for header_file in header_files]
-rel_files = rel_src_files + rel_header_files
+rel_libhead_files = [os.path.relpath(libhead_file, libhead_folderPath) \
+                    for libhead_file in libhead_files]
+rel_files = rel_src_files + rel_header_files + rel_libhead_files
 
 
 #
@@ -142,12 +178,17 @@ rel_files = rel_src_files + rel_header_files
 #
 generated_folder = os.path.join(project_path, "generated")
 generated_src_folder = os.path.join(generated_folder, "src")
+	#we are including library_headers and project headers in one generated-folder
+	#as behaviour is the same 
 generated_headers_folder = os.path.join(generated_folder, "headers")
+
 
 generated_src_files = [os.path.join(generated_src_folder, src_file) \
 					   for src_file in rel_src_files]
 generated_header_files = [os.path.join(generated_headers_folder, header_file) \
-					   for header_file in rel_header_files]
+					   for header_file in rel_header_files] \
+					   + [os.path.join(generated_headers_folder, libhead_file) \
+					   for libhead_file in rel_libhead_files]
 generated_files = generated_src_files + generated_header_files
 
 
@@ -197,7 +238,6 @@ og_to_gen = dict()
 for i in range(0, len(generated_files)):
 	og_to_gen[og_files[i]] = generated_files[i]
 
-
 #
 #Precompiles the files
 #
@@ -234,12 +274,15 @@ if not shutil.which("gcc"):
 #
 compile_command = "gcc -I"
 compile_command += generated_headers_folder
+compile_command += " -L"
+compile_command += lib_folderPath
 compile_command += " -o "
 compile_command += executable_file
 compile_command += " "
 for the_src_file in generated_src_files:
 	compile_command += the_src_file + " "
 
+print(compile_command)
 #
 #Remove old executable
 #
