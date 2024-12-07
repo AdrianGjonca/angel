@@ -1,22 +1,162 @@
 #!/usr/bin/env python3
 
+######DEFAULT JSON######
+project_json_content = """
+{
+	/*
+	 * Angel Precompiler Settings
+	 */
+	"use angel-pc"		: true,
+	
+	/*
+	 * Executable name
+	 *
+	 * NOTE This flag applies to the output file even when you are not 
+	 *      building an executable (e.g. library)
+	 */
+	"executable name"			: "executable",		//For *NIX systems, Linux/MacOS for example
+	"executable name (windows)"	: "executable.exe",	//For Windows
+	
+	/*
+	 * C standard to use
+	 * e.g. gnu23 or c11 ect
+	 */
+	"C standard"		: "gnu17",
+	
+	/*
+	 * Libraries to link to in your project
+	 * Includes all libraries, OS installed and not, static or shared.
+	 *
+	 * NOTE Do not include the '-l' prefix as angel-bd adds it automatically
+	 *      e.g.   c -> -lc, sdl2 -> -lsdl2
+	 *
+	 * NOTE Still includes all standard libraries of GCC
+	 */
+	"libraries"			: [],
+	
+	/*
+	 * Warning flags to be used by gcc
+	 *
+	 * NOTE Similar to the libraries, the '-W' flag is prepended automatically
+	 *      e.g.   all -> -Wall, extra -> -Wextra
+	 */
+	"warnings"			: ["all"],
+	
+	/*
+	 * Debug flags (for including debug info)
+	 * 
+	 * NOTE "debug level":0 is the default (no debugging info)
+	 *      "debug level":2 is the standard when using the -g flag on GCC.
+	 *      "debug level":3 is the highest you can go
+	 *      (If you dont know about the -g flag and are learning c
+	 *       I highly recommend you watch something on GDB and
+	 *       debugging C code :D )
+	 *
+	 * NOTE The "debug flags" is to be used by the true GDB pros.
+	 *      Like with the other properties, angel-bd automatically prepends
+	 *      the (in this case) 'g' flag
+	 *      e.g.  "dwarf-2" -> "-gdwarf-2"
+	 */
+	"debug level"		: 0,
+	"debug flags"		: [],
+	
+	/*
+	 * Optimization level
+	 * "0", "3", "s", "fast", etc
+	 * 
+	 * DO YOUR RESEARCH
+	 *
+	 * GCC default is 0 - none
+	 */
+	 "optimization level"	: 0,
+	 
+	 /*
+	  * Additional flags
+	  * 
+	  * Needed for generating libraries!
+	  * AND also for use by the REAL c pros.
+	  *
+	  * NOTE the flags below only have the "-" appended to them
+	  * unlike before
+	  * e.g.  "fsanitize=leak" -> "-fsanitize=leak"
+	  *       "shared"         -> "-shared"
+	  */
+	  "additional flags"	: []
+}
+"""
 
-
-#TODO implement project settings system
-
-
-
+import re
 import sys
 import os
 import shutil
 import subprocess
+import json
 
+################################################
+##
+## 
+## Functions
+## 
+##
+################################################
+OPTION_REMOVECOMMENTS = False
+OPTION_NEATIFY = False
+def remove_json_comments(json_with_comments: str) -> str:
+	if not OPTION_REMOVECOMMENTS:
+		return json_with_comments
+	
+	# Remove single-line comments (//...)
+	json_without_comments = re.sub(r'//.*', '', json_with_comments)
+	# Remove multi-line comments (/* ... */)
+	json_without_comments = re.sub(r'/\*.*?\*/', '', json_without_comments, flags=re.DOTALL)
+    
+	if OPTION_NEATIFY:
+		return json_without_comments \
+		       .strip() \
+		       .replace("\t\t", " ")   \
+		       .replace("\t", " ")
+	else:
+		return json_without_comments \
+		       .strip()
+    
+def get_directories(path):
+	#Chat GPT wrote this one line monstrosity
+    return [os.path.join(path, entry) \
+            for entry in os.listdir(path) \
+            if os.path.isdir(os.path.join(path, entry))]
+
+def get_directories_nameonly(path):
+	#Chat GPT wrote this one line monstrosity
+    return [entry for entry in os.listdir(path) \
+            if os.path.isdir(os.path.join(path, entry))]
+
+def get_all_file_paths(directory):
+	#Credit to big man Chat-GPT (I know f*ckall python :( )
+    file_paths = []
+    for root, _, files in os.walk(directory):
+        for file in files:
+            file_paths.append(os.path.join(root, file))
+    return file_paths
+
+
+################################################
+##
+## 
+## Beginnings
+## 
+##
+################################################
 if len(sys.argv) < 2:
     print("Angel BuilDer cannot work if you don't give me a project root directory")
     sys.exit()
 
 project_path = sys.argv[1]
 
+if ("--json" in sys.argv):
+	print(remove_json_comments(project_json_content))
+	sys.exit()
+if ("--json-stripped" in sys.argv):
+	print(project_json_content)
 if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("This is the Angel BuilDer command")
 	print("Use this to build your Angel-DT projects")
@@ -36,17 +176,20 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("         |     |")
 	print("         |     header files (*.h) [can include those in nested subdirs]")
 	print("         | ")
-	print("         |__libraries/")
+	print("         |__libraries/ (optional)")
 	print("         |     |")
 	print("         |     conatins any not-os-installed Static or Shared libraries")
 	print("         |     (the latter is unrecomended as Shared libraries still")
 	print("         |      need to be installed on the os level inorder to even")
 	print("         |      execute the program on your machine)")
 	print("         | ")
-	print("         |__library_headers/")
-	print("         :     |")
-	print("         :     conatins any headers pertaining to the not-os-installed")
-	print("         :     Static or Shared libraries.")
+	print("         |__library_headers/  (optional)")
+	print("         |     |")
+	print("         |     conatins any headers pertaining to the not-os-installed")
+	print("         |     Static or Shared libraries.")
+	print("         | ")
+	print("         |__project.json (optional) -> compilation settings (e.g.")
+	print("         :                             libraries, compiler flags etc)")
 	print("         : ")
 	print("         :..generated/ ")
 	print("         :     :")
@@ -65,32 +208,6 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("")
 	sys.exit()
 
-
-################################################
-##
-## 
-## Functions
-## 
-##
-################################################
-def get_directories(path):
-	#Chat GPT wrote this one line monstrosity
-    return [os.path.join(path, entry) \
-            for entry in os.listdir(path) \
-            if os.path.isdir(os.path.join(path, entry))]
-
-def get_directories_nameonly(path):
-	#Chat GPT wrote this one line monstrosity
-    return [entry for entry in os.listdir(path) \
-            if os.path.isdir(os.path.join(path, entry))]
-
-def get_all_file_paths(directory):
-	#Credit to big man Chat-GPT (I know f*ckall python :( )
-    file_paths = []
-    for root, _, files in os.walk(directory):
-        for file in files:
-            file_paths.append(os.path.join(root, file))
-    return file_paths
 ################################################
 ##
 ## 
@@ -98,7 +215,6 @@ def get_all_file_paths(directory):
 ## 
 ##
 ################################################
-
 
 #
 #Check if project_path is a valid directory
@@ -111,6 +227,23 @@ else:
 	print("Check path given")
 	sys.exit()
 
+###
+#
+# project.json section
+#
+###
+
+project_json_path   = os.path.join(project_path, "project.json")
+project_json_exists = os.path.isfile(project_json_path)
+if project_json_exists:
+	print("Project Settings found (project.json)")
+else:
+	print("Project Settings not-found (using default options)")
+
+
+if project_json_exists:
+	#TODO Implement project settings implementation
+	pass    
 
 #
 #Checks if project directories are set up correctly
@@ -128,19 +261,19 @@ contains_libs = \
 contains_libheads = \
 	"library_headers" in pr_folders_nameonly
 
-contains_all = contains_src  and contains_headers and \
-               contains_libs and contains_libheads
+contains_all = contains_src  and contains_headers
 
+if not contains_libs:
+	print("Missing libraries/ folder\n  However this is optional\n  (angel-bd --help for info)")
+if not contains_libheads:
+	print("Missing library_headers/ folder\n  However this is optional\n  (angel-bd --help for info)")
+	
 if not contains_all:
 	print("Build Failed")
 	if not contains_src:
 		print("Missing src/ folder (angel-bd --help for info)")
 	if not contains_headers:
 		print("Missing headers/ folder (angel-bd --help for info)")
-	if not contains_libs:
-		print("Missing libraries/ folder (angel-bd --help for info)")
-	if not contains_libheads:
-		print("Missing library_headers/ folder (angel-bd --help for info)")
 	sys.exit()
 else:
 	print("src/, headers/, libraries/ and library_headers/ folders found!")
