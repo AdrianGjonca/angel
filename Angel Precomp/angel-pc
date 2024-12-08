@@ -93,13 +93,27 @@ def handle_chains(code):
         i = 0
         fsm_state = 0
         while i < len(code_internal):
-            if fsm_state == 0:
+            if fsm_state == -2:
+                if code_internal[i] == '*' and i+1 < len(code_internal):
+                    i += 1
+                    if code_internal[i] == '/':
+                        fsm_state == 0
+            elif fsm_state == -1:
+                if code_internal[i] == '\n':
+                    fsm_state == 0
+            elif fsm_state == 0:
                 if code_internal[i] == '"':
                     fsm_state = 1
                 elif code_internal[i] == "'":
                     fsm_state = 2
                 elif code[i] == "@":
                     at_locations.append(i)
+                elif code[i] == "/"  and i+1 < len(code_internal):
+                    i += 1
+                    if code[i] == "/":
+                        fsm_state = -1
+                    elif code[i] == "*":
+                        fsm_state = -2
             elif fsm_state == 1:
                 if code_internal[i] == '"':
                     fsm_state = 0
