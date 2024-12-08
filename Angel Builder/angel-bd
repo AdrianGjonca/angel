@@ -68,7 +68,7 @@ project_json_content = """
 	 *
 	 * GCC default is 0 - none
 	 */
-	 "optimization level"	: 0,
+	 "optimization level"	: "0",
 	 
 	 /*
 	  * Additional flags
@@ -99,7 +99,7 @@ import json
 ## 
 ##
 ################################################
-OPTION_REMOVECOMMENTS = False
+OPTION_REMOVECOMMENTS = True
 OPTION_NEATIFY = False
 def remove_json_comments(json_with_comments: str) -> str:
 	if not OPTION_REMOVECOMMENTS:
@@ -153,10 +153,11 @@ if len(sys.argv) < 2:
 project_path = sys.argv[1]
 
 if ("--json" in sys.argv):
-	print(remove_json_comments(project_json_content))
+	print(project_json_content)
 	sys.exit()
 if ("--json-stripped" in sys.argv):
-	print(project_json_content)
+	print(remove_json_comments(project_json_content))
+	sys.exit()
 if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("This is the Angel BuilDer command")
 	print("Use this to build your Angel-DT projects")
@@ -240,10 +241,77 @@ if project_json_exists:
 else:
 	print("Project Settings not-found (using default options)")
 
+project_settings = dict()
 
-if project_json_exists:
-	#TODO Implement project settings implementation
-	pass    
+if not project_json_exists:
+	project_settings = json.loads(remove_json_comments(project_json_content))
+else:
+    with open(project_json_path, 'r') as file:
+    	project_settings = json.loads(remove_json_comments(file.read()))
+
+print("####")
+print(project_settings)
+print("####")
+
+#
+# check if all properties are defined
+#
+
+pr__angelPc      = "use angel-pc" in project_settings
+pr__ExecName     = "executable name" in project_settings
+pr__ExecNameW    = "executable name (windows)" in project_settings
+pr__CStand       = "C standard" in project_settings
+pr__libraries    = "libraries" in project_settings
+pr__warnings     = "warnings" in project_settings
+pr__debug_level  = "debug level" in project_settings
+pr__debug_flags  = "debug flags" in project_settings
+pr__opt_lvl      = "optimization level" in project_settings
+pr__add_flags    = "additional flags" in project_settings
+
+should_exit_prematurely = False
+if not pr__angelPc:
+    print("project.json -> MISSING PROPERTY \"use angel-pc\"")
+    should_exit_prematurely = True
+if not pr__ExecName:
+    print("project.json -> MISSING PROPERTY \"executable name\"")
+    should_exit_prematurely = True
+if not pr__ExecNameW:
+    print("project.json -> MISSING PROPERTY \"executable name (windows)\"")
+    should_exit_prematurely = True
+if not pr__CStand:
+    print("project.json -> MISSING PROPERTY \"C standard\"")
+    should_exit_prematurely = True
+if not pr__libraries:
+    print("project.json -> MISSING PROPERTY \"libraries\"")
+    should_exit_prematurely = True
+if not pr__warnings:
+    print("project.json -> MISSING PROPERTY \"warnings\"")
+    should_exit_prematurely = True
+if not pr__debug_level:
+    print("project.json -> MISSING PROPERTY \"debug level\"")
+    should_exit_prematurely = True
+if not pr__debug_flags:
+    print("project.json -> MISSING PROPERTY \"debug flags\"")
+    should_exit_prematurely = True
+if not pr__opt_lvl:
+    print("project.json -> MISSING PROPERTY \"optimization level\"")
+    should_exit_prematurely = True
+if not pr__add_flags:
+    print("project.json -> MISSING PROPERTY \"additional flags\"")
+    should_exit_prematurely = True
+
+#TODO Typechecking
+
+if should_exit_prematurely:
+	print("Compilation failed as properties are missing from project.json")
+	print("Use 'angel-bd --json' to see an example project.json file")
+	sys.exit()
+
+###
+#
+# main section
+#
+###
 
 #
 #Checks if project directories are set up correctly
@@ -374,22 +442,30 @@ for i in range(0, len(generated_files)):
 #
 #Precompiles the files
 #
-commands_to_execute = [ "angel-pc " + og_file + " -o " + og_to_gen[og_file] \
-					    for og_file in og_files]
-i = 0
-for command in commands_to_execute:
-	result = subprocess.run(command, shell=True, capture_output=True, text=True)
-	print("----Precompiled " + og_files[i] + " to " + og_to_gen[og_files[i]])
-	i += 1
+if project_settings["use angel-pc"] == True:
+	commands_to_execute = [ "angel-pc " + og_file + " -o " + og_to_gen[og_file] \
+							for og_file in og_files]
+	i = 0
+	for command in commands_to_execute:
+		result = subprocess.run(command, shell=True, capture_output=True, text=True)
+		print("----Precompiled " + og_files[i] + " to " + og_to_gen[og_files[i]])
+		i += 1
+else:
+	print("Precompilation skipped")
+	for og_file in og_files:
+		shutil.copyfile(og_file, og_to_gen[og_file])
+		print("----Copied " + og_file + " to " + og_to_gen[og_file])
 
 
 #
 #Create name for the executable
 #
-executable_file = os.path.join(project_path, "executable")
+executable_file = ""
 
 if os.name == "nt":
-	executable_file += ".exe"
+	executable_file = os.path.join(project_path, project_settings["executable name (windows)"])
+else:
+	executable_file = os.path.join(project_path, project_settings["executable name"])
 
 
 #
@@ -409,6 +485,31 @@ compile_command = "gcc -I"
 compile_command += generated_headers_folder
 compile_command += " -L"
 compile_command += lib_folderPath
+compile_command += " -std="
+compile_command += project_settings["C standard"]
+
+for a_lib in project_settings["libraries"]:
+	compile_command += " -l"
+	compile_command += a_lib
+
+for a_warning in project_settings["warnings"]:
+	compile_command += " -W"
+	compile_command += a_warning
+
+compile_command += " -g"
+compile_command += str(project_settings["debug level"])
+
+for a_debug_flag in project_settings["debug flags"]:
+	compile_command += " -g"
+	compile_command += a_debug_flag
+
+compile_command += " -O"
+compile_command += project_settings["optimization level"]
+
+for a_flag in project_settings["additional flags"]:
+	compile_command += " -"
+	compile_command += a_flag
+
 compile_command += " -o "
 compile_command += executable_file
 compile_command += " "
@@ -416,6 +517,7 @@ for the_src_file in generated_src_files:
 	compile_command += the_src_file + " "
 
 print(compile_command)
+
 #
 #Remove old executable
 #
