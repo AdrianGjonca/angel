@@ -249,10 +249,6 @@ else:
     with open(project_json_path, 'r') as file:
     	project_settings = json.loads(remove_json_comments(file.read()))
 
-print("####")
-print(project_settings)
-print("####")
-
 #
 # check if all properties are defined
 #
@@ -300,10 +296,92 @@ if not pr__add_flags:
     print("project.json -> MISSING PROPERTY \"additional flags\"")
     should_exit_prematurely = True
 
-#TODO Typechecking
-
 if should_exit_prematurely:
 	print("Compilation failed as properties are missing from project.json")
+	print("Use 'angel-bd --json' to see an example project.json file")
+	sys.exit()
+
+#
+#Typechecking
+#
+should_exit_prematurely = False # redundant but for neatness
+
+pr__angelPc_t      = type(project_settings["use angel-pc"]) is bool
+pr__ExecName_t     = type(project_settings["executable name"]) is str
+pr__ExecNameW_t    = type(project_settings["executable name (windows)"]) is str
+pr__CStand_t       = type(project_settings["C standard"]) is str
+pr__libraries_t    = type(project_settings["libraries"]) is list
+pr__libraries_sub_t = True
+if pr__libraries_t:
+	for item in project_settings["libraries"]:
+		pr__libraries_sub_t = pr__libraries_sub_t and type(item) is str
+pr__warnings_t     = type(project_settings["warnings"]) is list
+pr__warnings_sub_t = True
+if pr__warnings_t:
+	for item in project_settings["warnings"]:
+		pr__warnings_sub_t = pr__warnings_sub_t and type(item) is str
+pr__debug_level_t  = type(project_settings["debug level"]) is int
+pr__debug_flags_t  = type(project_settings["debug flags"]) is list
+pr__debug_flags_sub_t = True
+if pr__debug_flags_t:
+	for item in project_settings["debug flags"]:
+		pr__debug_flags_sub_t = pr__debug_flags_sub_t and type(item) is str
+pr__opt_lvl_t      = type(project_settings["optimization level"]) is str
+pr__add_flags_t    = type(project_settings["additional flags"]) is list
+pr__add_flags_sub_t = True
+if pr__add_flags_t:
+	for item in project_settings["additional flags"]:
+		pr__add_flags_sub_t = pr__add_flags_sub_t and type(item) is str
+
+if not pr__angelPc_t:
+    print("project.json -> INCORRECT TYPE for \"use angel-pc\" (expected bool)")
+    should_exit_prematurely = True
+if not pr__ExecName_t:
+    print("project.json -> INCORRECT TYPE for \"executable name\" (expected str)")
+    should_exit_prematurely = True
+if not pr__ExecNameW_t:
+    print("project.json -> INCORRECT TYPE for \"executable name (windows)\" (expected str)")
+    should_exit_prematurely = True
+if not pr__CStand_t:
+    print("project.json -> INCORRECT TYPE for \"C standard\" (expected str)")
+    should_exit_prematurely = True
+if not pr__libraries_t:
+    print("project.json -> INCORRECT TYPE for \"libraries\" (expected list)")
+    should_exit_prematurely = True
+if not pr__libraries_sub_t:
+    print("project.json -> INCORRECT TYPE for one or more items in \"libraries\" \
+    (expected list of str)")
+    should_exit_prematurely = True
+if not pr__warnings_t:
+    print("project.json -> INCORRECT TYPE for \"warnings\" (expected list)")
+    should_exit_prematurely = True
+if not pr__warnings_sub_t:
+    print("project.json -> INCORRECT TYPE for one or more items in \"warnings\" \
+    (expected list of str)")
+    should_exit_prematurely = True
+if not pr__debug_level_t:
+    print("project.json -> INCORRECT TYPE for \"debug level\" (expected int)")
+    should_exit_prematurely = True
+if not pr__debug_flags_t:
+    print("project.json -> INCORRECT TYPE for \"debug flags\" (expected list)")
+    should_exit_prematurely = True
+if not pr__debug_flags_sub_t:
+    print("project.json -> INCORRECT TYPE for one or more items in \"debug flags\" \
+    (expected list of str)")
+    should_exit_prematurely = True
+if not pr__opt_lvl_t:
+    print("project.json -> INCORRECT TYPE for \"optimization level\" (expected str)")
+    should_exit_prematurely = True
+if not pr__add_flags_t:
+    print("project.json -> INCORRECT TYPE for \"additional flags\" (expected list)")
+    should_exit_prematurely = True
+if not pr__add_flags_sub_t:
+    print("project.json -> INCORRECT TYPE for one or more items in \"additional flags\" \
+    (expected list of str)")
+    should_exit_prematurely = True
+
+if should_exit_prematurely:
+	print("Compilation failed as properties are of wrong types in project.json")
 	print("Use 'angel-bd --json' to see an example project.json file")
 	sys.exit()
 
