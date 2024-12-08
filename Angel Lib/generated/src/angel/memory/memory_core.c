@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-struct angel::mem::MemoryChunk {
+struct angel_0mem_0MemoryChunk {
 	char tag[1024]; //Currently set at 1024, doubt it needs to be bigger. Likely ought to be smaller
 	size_t size;
 	void * data;
@@ -13,34 +13,29 @@ struct angel::mem::MemoryChunk {
 
 uint64_t _current_heapsize = 0; 
 
-uint64_t angel::mem::getHeapSize(void) {
+uint64_t angel_0mem_0getHeapSize(void) {
 	return _current_heapsize;
 }
 
-angel::mem::MemoryChunk angel::mem::allocate(size_t size, char * tag) {
+angel_0mem_0MemoryChunk angel_0mem_0allocate(size_t size, char * tag) {
 	void * data = calloc(1, size);
 	
-	angel::mem::MemoryChunk output;
+	angel_0mem_0MemoryChunk output;
 	
 	strcpy(output.tag, tag);
 	output.size = size;
 	output.data = data;
 	
-	//not using isSuccess just for a slight performance boost if any honestly...
-	if(data) {
-		_current_heapsize += size;
-	}
-	
 	return output;
 }
 
-void angel::mem::free( angel::mem::MemoryChunk chunk ) {
-	if( angel::mem::isSuccess(chunk) ) {
+void angel_0mem_0free( angel_0mem_0MemoryChunk chunk ) {
+	if( angel_0mem_0isSuccess(chunk) ) {
 		free(chunk.data);
-		_current_heapsize -= size;
 	}
 }
 
-bool angel::mem::isSuccess( angel::mem::MemoryChunk chunk ) {
+bool angel_0mem_0isSuccess( angel_0mem_0MemoryChunk chunk ) {
 	return chunk.data == NULL;
 }
+
