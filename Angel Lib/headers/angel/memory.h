@@ -18,7 +18,7 @@ typedef struct angel::mem::MemoryChunk		angel::mem::MemoryChunk;
  * 
  * @returns number of bytes allocated on heap by Angel Lib
  */
-extern uint64_t angel::mem::getHeapSize(void);
+extern intmax_t angel::mem::getHeapSize(void);
 
 /**
  * @brief allocates a region of memory with a certain tag
@@ -41,3 +41,20 @@ extern void angel::mem::free(angel::mem::MemoryChunk chunk);
  * @return TRUE if successful allocation, FALSE if not
  */
 extern bool angel::mem::isSuccess(angel::mem::MemoryChunk chunk);
+
+/**
+ * @breif Configures if the memory-manager should be verbose or not
+ * Verbose means that it prints terminal output for various memory functionality
+ * Non-verbose means there is no terminal output by the memory management system
+ * @param verbose TRUE for verbose, FALSE for non-verbose
+ */
+extern void angel::mem::setVerbose(bool verbose);
+
+
+
+
+
+
+
+
+

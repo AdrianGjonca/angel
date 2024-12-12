@@ -97,11 +97,13 @@ def handle_chains(code):
                 if code_internal[i] == '*' and i+1 < len(code_internal):
                     i += 1
                     if code_internal[i] == '/':
-                        fsm_state == 0
+                        fsm_state = 0
             elif fsm_state == -1:
+                #print("in comment: " + code_internal[i])
                 if code_internal[i] == '\n':
-                    fsm_state == 0
+                    fsm_state = 0
             elif fsm_state == 0:
+                #print(code_internal[i])
                 if code_internal[i] == '"':
                     fsm_state = 1
                 elif code_internal[i] == "'":
@@ -202,6 +204,8 @@ def handle_chains(code):
     ################################################
     
     all_the_ats = get_at_sym_loc(code)
+    
+    print(all_the_ats)
     
     while all_the_ats:
         code = sort_out_first_at(code , all_the_ats[0])
