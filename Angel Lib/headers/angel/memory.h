@@ -5,11 +5,20 @@
  * Provides a more complex form of memory management for C
  */
 
+#ifndef ANGEL__MEMORY_H
+#define ANGEL__MEMORY_H
+
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
 
 typedef struct angel::mem::MemoryChunk		angel::mem::MemoryChunk;
+
+struct angel::mem::MemoryChunk {
+	char tag[1024]; //Currently set at 1024, doubt it needs to be bigger. Likely ought to be smaller
+	size_t size;
+	void * data;
+};
 
 /**
  * @brief returns the heap size
@@ -50,6 +59,7 @@ extern bool angel::mem::isSuccess(angel::mem::MemoryChunk chunk);
  */
 extern void angel::mem::setVerbose(bool verbose);
 
+#endif
 
 
 

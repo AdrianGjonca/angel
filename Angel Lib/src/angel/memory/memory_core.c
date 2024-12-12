@@ -10,16 +10,8 @@ extern void _show_chunk(angel::mem::MemoryChunk chunk);
 
 ////////////////
 
-struct angel::mem::MemoryChunk {
-	char tag[1024]; //Currently set at 1024, doubt it needs to be bigger. Likely ought to be smaller
-	size_t size;
-	void * data;
-};
-
-////////////////
-
 intmax_t _current_heapsize = 0; 
-bool _verbose_mode = 0; //We cant use 'FALSE' outside of functions for some reason
+bool _verbose_mode = false;
 
 ////////////////
 
@@ -41,7 +33,7 @@ angel::mem::MemoryChunk angel::mem::allocate(size_t size, char * tag) {
 		_current_heapsize += size;
 		if(_verbose_mode) {
 			printf("Memory chunk allocation successful");
-			chunk@_show_chunk();
+			output@_show_chunk();
 		}
 	}
 	
@@ -66,7 +58,7 @@ void angel::mem::free( angel::mem::MemoryChunk chunk ) {
 }
 
 bool angel::mem::isSuccess( angel::mem::MemoryChunk chunk ) {
-	return chunk.data == NULL;
+	return chunk.data != NULL;
 }
 
 void angel::mem::setVerbose(bool verbose) {
@@ -77,10 +69,23 @@ void angel::mem::setVerbose(bool verbose) {
 
 void _show_chunk(angel::mem::MemoryChunk chunk) {
 	printf("_HEAP_: %ju\n", _current_heapsize);
-	printf("TAG:   %s\n"  , chunk.tag);
-	printf("SIZE:  %zu\n" , chunk.size);
-	printf("pDATA: %p\n\n", () chunk.data);
+	printf("TAG:    %s\n"  , chunk.tag);
+	printf("SIZE:   %zu\n" , chunk.size);
+	printf("pDATA:  %p\n\n", chunk.data);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
