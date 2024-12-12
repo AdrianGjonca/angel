@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+echo "Installing Angel Development Tools by Adrian Gjonca"
+echo "(LOCAL INSTALL)"
+echo "Re-run script every user-sessoion when you want to use Angel DT and do not have admin rights"
+echo ""
+
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+
+if [ -d "$HOME/bin" ]; then
+  rm -r "$HOME/bin"
+fi
+
+mkdir "$HOME/bin"
+
+echo "    ~/bin/angel-pc"
+cp "$SCRIPT_DIR""/Angel Precomp/angel-pc" "$HOME/bin/angel-pc"
+chmod +x "$HOME/bin/angel-pc"
+
+echo "    ~/bin/angel-bd"
+cp "$SCRIPT_DIR""/Angel Builder/angel-bd" "$HOME/bin/angel-bd"
+chmod +x "$HOME/bin/angel-bd"
+
+echo ""
+
+if echo "$PATH" | tr ':' '\n' | grep -q "^$HOME/bin\$"; then
+    echo "~/bin is allready in \$PATH"
+else
+    export PATH "$PATH:$HOME/bin"
+fi
+
+
+#
+#TODO make a permanent install script (at some point)
+#
