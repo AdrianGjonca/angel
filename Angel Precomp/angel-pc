@@ -10,6 +10,9 @@ if len(sys.argv) < 2:
 filename = sys.argv[1]
 should_outputToFile = "-o" in sys.argv
 
+DEBUG__prefix = "-Dp" in sys.argv
+DEBUG__echo = "-De" in sys.argv
+
 if ("-h" in sys.argv) or ("--help" in sys.argv):
     print("This is the Angel PreCompiler command")
     print("Use this to build precompile your Angel-DT source files")
@@ -167,7 +170,7 @@ def handle_chains(code):
         
         endContent = endToken + 1 # lalala([d]adada
         bracket_lvl = 1
-        
+
         has_comma = False
         
         while bracket_lvl > 0 and endContent < len(code_internal):
@@ -212,7 +215,39 @@ def handle_chains(code):
         all_the_ats = get_at_sym_loc(code)
         
     return code
+
+##
+# Prefix handling
+##
+
+def split_prefix(code):
+    #TODO implement prefix FSM
+    pass
     
+
+##
+# Other shennanigans
+##
+
+###
+# Handles the actual file and returns what must be output
+###
+# code : string -> the original code
+# ~return~ : string -> the resultant code
+###
+def handle_code(code):
+    transformed_code = code
+    
+    if DEBUG__echo:
+        return code
+    if DEBUG__prefix:
+        #TODO prefix section
+        return code
+    
+    transformed_code = handle_namespaces(transformed_code)
+    transformed_code = handle_chains(transformed_code)
+    return transformed_code
+
 ################################################
 ##
 ## 
@@ -229,8 +264,7 @@ if should_outputToFile:
 try:
     with open(filename, 'r') as file:
         og_code = file.read()
-        transformed_code = handle_namespaces(og_code)
-        transformed_code = handle_chains(transformed_code)
+        transformed_code = handle_code(og_code)
         if should_outputToFile:
             with open(sys.argv[len(sys.argv) - 1], "w") as fileout:
                 print(transformed_code, file=fileout)
