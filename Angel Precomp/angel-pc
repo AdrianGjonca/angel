@@ -10,7 +10,8 @@ if len(sys.argv) < 2:
 filename = sys.argv[1]
 should_outputToFile = "-o" in sys.argv
 
-DEBUG__prefix = "-Dp" in sys.argv
+DEBUG__prefix = ("-Dp" in sys.argv) or ("-Dp1" in sys.argv)
+DEBUG__prefix_alt = "-Dp2" in sys.argv
 DEBUG__echo = "-De" in sys.argv
 
 if ("-h" in sys.argv) or ("--help" in sys.argv):
@@ -208,7 +209,7 @@ def handle_chains(code):
     
     all_the_ats = get_at_sym_loc(code)
     
-    print(all_the_ats)
+    #print(all_the_ats)
     
     while all_the_ats:
         code = sort_out_first_at(code , all_the_ats[0])
@@ -220,11 +221,130 @@ def handle_chains(code):
 # Prefix handling
 ##
 
+###
+# Splits the prefix section from the c-code
+###
+# code : string -> the original code
+# ~return~ : (string,string) -> the prifix section, the C code. 
+#                               Prefix is "" if no prefix section. 
+#                               Returns None if the there is an issue
+###
 def split_prefix(code):
-    #TODO implement prefix FSM
-    pass
+    #print("~~"+code+"~~")
+    #FSM to split prefix and C-code section
     
-
+    # a  - 0 -> starting 
+    # b1 - 1
+    # b2 - 2
+    # b3 - 3
+    # c  - 4
+    # d1 - 5
+    # d2 - 6
+    # d3 - 7
+    #
+    # X  - 8   (accepting : no prefix)
+    # F  - 9   (failure   : incorrect notation)
+    # E  - 10  (accepting : has prefix)
+    
+    index = 0
+    state = 0
+    IndexC = -1
+    IndexE = -1
+    
+    for a in code:
+        #start_state = state
+        if state == 0:          #a
+            #
+            if is_whitespc(a):
+                state = 0
+            elif a == "`":
+                state = 1
+            else:
+                state = 8
+            #
+        elif state == 1:        #b1
+            #
+            if a == "`":
+                state = 2
+            else:
+                state = 9
+            #
+        elif state == 2:        #b2
+            #
+            if a == "`":
+                state = 3
+            else:
+                state = 9
+            #
+        elif state == 3:        #b3
+            #
+            if a == "`":
+                state = 9
+            else:
+                state = 4
+                IndexC = index
+            #
+        elif state == 4:        #c
+            #
+            if a == "`":
+                state = 5
+            else:
+                state = 4
+            #
+        elif state == 5:        #d1
+            #
+            if a == "`":
+                state = 6
+            else:
+                state = 4
+            #
+        elif state == 6:        #d2
+            #
+            if a == "`":
+                state = 7
+            else:
+                state = 4
+            #
+        elif state == 7:        #d3
+            #
+            if a == "`":
+                state = 4
+            else:
+                state = 10
+                IndexE = index
+            #
+        elif state == 8:        #X
+            break
+        elif state == 9:        #F
+            break
+        elif state == 10:       #E
+            break
+        
+        #print("* " + a + " " + str(start_state) + "->" + str(state))
+        
+        index += 1
+    
+    #print("STATE::::" + str(state))
+    
+    if state == 9:
+        return None
+    
+    if state == 8:
+        return ("", code)
+    
+    if state == 10:
+        #print(f"[{IndexC } : {IndexE - 3}]")
+        return (code[IndexC : IndexE - 3], code[IndexE:])
+    
+    return None #Should never get here
+    
+###
+# TODO Description
+###
+def handle_prefix(prefix, c_code):
+    #TODO handle prefix section
+    return c_code
+    
 ##
 # Other shennanigans
 ##
@@ -236,14 +356,20 @@ def split_prefix(code):
 # ~return~ : string -> the resultant code
 ###
 def handle_code(code):
-    transformed_code = code
     
     if DEBUG__echo:
         return code
     if DEBUG__prefix:
-        #TODO prefix section
-        return code
+        return split_prefix(code)[0]
+    if DEBUG__prefix_alt:
+        return split_prefix(code)[1]
     
+    split_code = split_prefix(code)
+    if split_code == None:
+        print("Angel Precompiler - error with formatting of prefix section of file")
+        sys.exit()
+    
+    transformed_code = handle_prefix(split_code[0], split_code[1])
     transformed_code = handle_namespaces(transformed_code)
     transformed_code = handle_chains(transformed_code)
     return transformed_code
