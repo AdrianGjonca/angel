@@ -384,8 +384,60 @@ def get_statements(prefix):
 # ~return~ : String -> the processed C-code
 ###
 def swap_aliases(aliases, c_code):
-    #TODO implement alias switching
-    return c_code
+    position = 0
+    outCode = ""
+    while position < len(c_code):
+        if c_code[position] == "\"":
+            outCode += "\""
+            in_str = True
+            while in_str:
+                position += 1
+                outCode += c_code[position]
+                if c_code[position] == "\"" and c_code[position-1] != "\\":
+                    in_str = False
+        
+        elif c_code[position] == "`":
+            #outCode += "|"
+            position += 1
+            in_ali = True
+            
+            alias = ""
+            
+            while in_ali:
+                if c_code[position] == "`":
+                    in_ali = False
+                else:
+                    alias += c_code[position]
+                position += 1
+            outCode += aliases[alias] + c_code[position]
+            #outCode += "|"
+        
+        elif position>0 and c_code[position] == "/" and c_code[position-1] == "/":
+            while position < len(c_code) and c_code[position] != "\n":
+                outCode += c_code[position]
+                position += 1
+            outCode += c_code[position]
+        
+        elif position>0 and c_code[position-1] == "/" and c_code[position] == "*":
+            while not(position >= len(c_code) or (c_code[position-1] == "*" and c_code[position] == "/")):
+                outCode += c_code[position]
+                position += 1
+            outCode += "/"
+            
+        else:
+            #print("> " + c_code[position]) #will show one / on all comments unfortunately
+            
+            #if c_code[position] == "\n": 
+            #    outCode += "\n"
+            #elif c_code[position] == "/": 
+            #    outCode += "/"
+            #else:
+            #    outCode += "#"
+            outCode += c_code[position]
+            
+        position += 1
+                    
+    return outCode
 
 ###
 # Takes your split original code and returns the C-code that has been processed 
