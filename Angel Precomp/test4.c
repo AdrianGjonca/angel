@@ -3,7 +3,7 @@ alias `AnotherFN` is `library::subsection::AnotherFN`;
 
 alias `Message` is `angel::msg::Message`;```//Comment
 
-#include<angel/message>
+#include<angel/message.h>
 
 int main() {
 	`Message` msg = `MyFunc`("a message");

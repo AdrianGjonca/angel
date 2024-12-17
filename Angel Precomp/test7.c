@@ -1,0 +1,3 @@
+```
+alias `aaaa` is aaa;
+```

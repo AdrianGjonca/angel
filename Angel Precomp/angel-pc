@@ -337,15 +337,125 @@ def split_prefix(code):
         return (code[IndexC : IndexE - 3], code[IndexE:])
     
     return None #Should never get here
-    
+
 ###
-# TODO Description
+# Takes prefix section and tokenized statements
+##
+# prefix : String -> the prefix section
+# ~return~ : List(List(String)) -> tokenized statements
+###
+def get_statements(prefix):
+    aliases = {}
+    
+    pattern = r';(?=(?:[^`]*`[^`]*`)*[^`]*$)'
+    statements = re.split(pattern, prefix)
+    
+    for i in range(len(statements)):
+        statements[i] = statements[i] \
+    	                .replace("\n", "") \
+    	                .replace("\t", "    ") \
+    	                .strip()
+    
+    to_remove = []
+    for a_str in statements:
+        if a_str == "":
+            to_remove.append(a_str)
+    
+    statements = [item for item in statements if item not in to_remove]
+    
+    
+    pattern = r' (?=(?:[^`]*`[^`]*`)*[^`]*$)'
+    tokenized_statements = []
+    for a_str in statements:
+        tokenized = re.split(pattern, a_str)
+        tokenized = [item for item in tokenized if item != ""]
+        tokenized_statements.append(tokenized)
+    
+    ####
+    
+    return tokenized_statements
+
+###
+# Takes your original C-code and an alias dictionaru and 
+# returns the C-code that has has the aliases processed 
+##
+# aliases : Dictionary(String, String) -> the alias dictionary
+# c_code : String -> the unprocessed C-code
+# ~return~ : String -> the processed C-code
+###
+def swap_aliases(aliases, c_code):
+    #TODO implement alias switching
+    return c_code
+
+###
+# Takes your split original code and returns the C-code that has been processed 
+# under the stuff handled through the prefix section.
+##
+# prefix : String -> the prefix section
+# c_code : String -> the unprocessed C-code
+# ~return~ : String -> the processed C-code
 ###
 def handle_prefix(prefix, c_code):
-    #TODO handle prefix section
-    return c_code
+    out_code = c_code;
+    statements = get_statements(prefix) #List of List of String
     
-##
+    ##
+    # 'alias' statements
+    alias_statements = [item for item in statements if item[0] == "alias"]
+    statements = [item for item in statements if item not in alias_statements]
+    alias_formatted_correctly = True
+    for item in alias_statements:
+        if len(item) != 4:
+            alias_formatted_correctly = False
+            break
+        if item[2] != "is":
+            alias_formatted_correctly = False
+            break
+        if (not item[1].startswith("`")) or (not item[1].startswith("`")):
+            alias_formatted_correctly = False
+            break
+        if (not item[3].startswith("`")) or (not item[3].startswith("`")):
+            alias_formatted_correctly = False
+            break
+    if alias_formatted_correctly:
+        aliases = {}
+        for item in alias_statements:
+            aliases[item[1][1:-1]] = item[3][1:-1]
+        out_code = swap_aliases(aliases, out_code)
+    else: #TODO implement better error messages (needn't be amazing)
+        print("PRECOMPILER Prefix-section issue")
+        print("            An 'alias' statement has been incorrectly formatted")
+        print("            Aliases ignored for file: " + filename)
+    
+    ##
+    # 'echo' statements
+    echo_statements = [item for item in statements if item[0] == "echo"]
+    statements = [item for item in statements if item not in echo_statements]
+    echo_formatted_correctly = True
+    for item in echo_statements:
+        if len(item) != 2:
+            alias_formatted_correctly = False
+            break
+        if (not item[1].startswith("`")) or (not item[1].startswith("`")):
+            alias_formatted_correctly = False
+            break
+    if alias_formatted_correctly:
+        for item in echo_statements:
+            print(f"AngelPC : |{filename}| - {item[1][1:-1]}")
+    else: #TODO implement better error messages (needn't be amazing)
+        print("PRECOMPILER Prefix-section issue")
+        print("            An 'echo' statement has been incorrectly formatted")
+        print("            Echo(s) ignored for file: " + filename)
+    
+    ##
+    # the rest
+    for i in range(prefix.count("\n")):
+        #To preserve line numbers (makes debugging on GCC easier)
+        out_code = "//PREFIX SECTION\n" + out_code
+    
+    return out_code
+    
+##pass
 # Other shennanigans
 ##
 
