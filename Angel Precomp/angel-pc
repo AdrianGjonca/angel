@@ -5,7 +5,7 @@ import sys
 
 if len(sys.argv) < 2:
     print("Angel PreCompiler cannot work if you don't give me a source file :(")
-    sys.exit()
+    sys.exit(2)
 
 filename = sys.argv[1]
 should_outputToFile = "-o" in sys.argv
@@ -30,7 +30,7 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
     print("         projects. Use this seperately if you know what you")
     print("         are doing. :)")
     print("")
-    sys.exit()
+    sys.exit(0)
 
 
 ################################################
@@ -474,10 +474,12 @@ def handle_prefix(prefix, c_code):
         for item in alias_statements:
             aliases[item[1][1:-1]] = item[3][1:-1]
         out_code = swap_aliases(aliases, out_code)
-    else: #TODO implement better error messages (needn't be amazing)
-        print("PRECOMPILER Prefix-section issue")
-        print("            An 'alias' statement has been incorrectly formatted")
-        print("            Aliases ignored for file: " + filename)
+    else: 
+        #TODO implement better error messages (needn't be amazing)
+        print(f"AngelPC : |{filename}| ! ERROR")
+        print("         Prefix-section issue")
+        print("         An 'alias' statement has been incorrectly formatted")
+        sys.exit(1)
     
     ##
     # 'echo' statements
@@ -494,10 +496,12 @@ def handle_prefix(prefix, c_code):
     if alias_formatted_correctly:
         for item in echo_statements:
             print(f"AngelPC : |{filename}| - {item[1][1:-1]}")
-    else: #TODO implement better error messages (needn't be amazing)
-        print("PRECOMPILER Prefix-section issue")
-        print("            An 'echo' statement has been incorrectly formatted")
-        print("            Echo(s) ignored for file: " + filename)
+    else: 
+        #TODO implement better error messages (needn't be amazing)
+        print(f"AngelPC : |{filename}| ! ERROR")
+        print("         Prefix-section issue")
+        print("         An 'echo' statement has been incorrectly formatted")
+        sys.exit(1)
     
     ##
     # the rest
@@ -528,8 +532,9 @@ def handle_code(code):
     
     split_code = split_prefix(code)
     if split_code == None:
-        print("Angel Precompiler - error with formatting of prefix section of file")
-        sys.exit()
+        print(f"AngelPC : |{filename}| ! ERROR")
+        print("           Error with formatting of prefix section of file")
+        sys.exit(1)
     
     transformed_code = handle_prefix(split_code[0], split_code[1])
     transformed_code = handle_namespaces(transformed_code)
@@ -547,7 +552,7 @@ def handle_code(code):
 if should_outputToFile:
     if len(sys.argv) < 4:
         print("Angel PreCompiler cannot output to file if you don't tell me where to output :(")
-        sys.exit()
+        sys.exit(1)
 
 try:
     with open(filename, 'r') as file:
@@ -559,9 +564,11 @@ try:
         else:
             print(transformed_code)
 except FileNotFoundError:
-    print("The file does not exist!")
+    print("AngelPC : |{filename}| ! The file does not exist!")
+    sys.exit(2)
 except IOError:
-    print("An error occurred while loading the file!")
+    print("AngelPC : |{filename}| ! An error occurred while loading the file!")
+    sys.exit(5)
 
 
 
