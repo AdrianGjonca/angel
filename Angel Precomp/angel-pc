@@ -476,9 +476,8 @@ def handle_prefix(prefix, c_code):
         out_code = swap_aliases(aliases, out_code)
     else: 
         #TODO implement better error messages (needn't be amazing)
-        print(f"AngelPC : |{filename}| ! ERROR")
-        print("         Prefix-section issue")
-        print("         An 'alias' statement has been incorrectly formatted")
+        print(f"AngelPC : |{filename}| ! Prefix-section issue")
+        print( "                         An 'alias' statement has been incorrectly formatted")
         sys.exit(1)
     
     ##
@@ -498,9 +497,8 @@ def handle_prefix(prefix, c_code):
             print(f"AngelPC : |{filename}| - {item[1][1:-1]}")
     else: 
         #TODO implement better error messages (needn't be amazing)
-        print(f"AngelPC : |{filename}| ! ERROR")
-        print("         Prefix-section issue")
-        print("         An 'echo' statement has been incorrectly formatted")
+        print(f"AngelPC : |{filename}| ! Prefix-section issue")
+        print( "                         An 'echo' statement has been incorrectly formatted")
         sys.exit(1)
     
     ##
@@ -532,8 +530,7 @@ def handle_code(code):
     
     split_code = split_prefix(code)
     if split_code == None:
-        print(f"AngelPC : |{filename}| ! ERROR")
-        print("           Error with formatting of prefix section of file")
+        print(f"AngelPC : |{filename}| ! Error with formatting of prefix section of file")
         sys.exit(1)
     
     transformed_code = handle_prefix(split_code[0], split_code[1])

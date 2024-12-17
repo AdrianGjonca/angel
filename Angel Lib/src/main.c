@@ -1,3 +1,7 @@
+```
+echo `You are compiling the version for Unit testing`;
+```
+
 #include<stdio.h>
 #include<stdbool.h>
 #include<angel/memory.h>

@@ -221,11 +221,11 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 #Check if project_path is a valid directory
 #
 if os.path.isdir(project_path):
-	print(f"Project-Directory found {project_path}")
+	print(f"AngelBD : Project-Directory found |{project_path}|")
 	#Rest carried on after the if statement
 else:
-	print("Directory not found")
-	print("Check path given")
+	print("AngelBD ! Directory not found")
+	print(f"          Check path given |{project_path}|")
 	sys.exit()
 
 ###
@@ -237,9 +237,9 @@ else:
 project_json_path   = os.path.join(project_path, "project.json")
 project_json_exists = os.path.isfile(project_json_path)
 if project_json_exists:
-	print("Project Settings found (project.json)")
+	print(f"AngelBD : Project Settings found (project.json)")
 else:
-	print("Project Settings not-found (using default options)")
+	print(f"AngelBD : Project Settings not-found (using default options)")
 
 project_settings = dict()
 
@@ -266,39 +266,39 @@ pr__add_flags    = "additional flags" in project_settings
 
 should_exit_prematurely = False
 if not pr__angelPc:
-    print("project.json -> MISSING PROPERTY \"use angel-pc\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"use angel-pc\"")
     should_exit_prematurely = True
 if not pr__ExecName:
-    print("project.json -> MISSING PROPERTY \"executable name\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"executable name\"")
     should_exit_prematurely = True
 if not pr__ExecNameW:
-    print("project.json -> MISSING PROPERTY \"executable name (windows)\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"executable name (windows)\"")
     should_exit_prematurely = True
 if not pr__CStand:
-    print("project.json -> MISSING PROPERTY \"C standard\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"C standard\"")
     should_exit_prematurely = True
 if not pr__libraries:
-    print("project.json -> MISSING PROPERTY \"libraries\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"libraries\"")
     should_exit_prematurely = True
 if not pr__warnings:
-    print("project.json -> MISSING PROPERTY \"warnings\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"warnings\"")
     should_exit_prematurely = True
 if not pr__debug_level:
-    print("project.json -> MISSING PROPERTY \"debug level\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"debug level\"")
     should_exit_prematurely = True
 if not pr__debug_flags:
-    print("project.json -> MISSING PROPERTY \"debug flags\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"debug flags\"")
     should_exit_prematurely = True
 if not pr__opt_lvl:
-    print("project.json -> MISSING PROPERTY \"optimization level\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"optimization level\"")
     should_exit_prematurely = True
 if not pr__add_flags:
-    print("project.json -> MISSING PROPERTY \"additional flags\"")
+    print(f"AngelBD ! project.json -> MISSING PROPERTY \"additional flags\"")
     should_exit_prematurely = True
 
 if should_exit_prematurely:
-	print("Compilation failed as properties are missing from project.json")
-	print("Use 'angel-bd --json' to see an example project.json file")
+	print(f"AngelBD ! Compilation failed as properties are missing from project.json")
+	print( "           Use 'angel-bd --json' to see an example project.json file")
 	sys.exit()
 
 #
@@ -334,55 +334,55 @@ if pr__add_flags_t:
 		pr__add_flags_sub_t = pr__add_flags_sub_t and type(item) is str
 
 if not pr__angelPc_t:
-    print("project.json -> INCORRECT TYPE for \"use angel-pc\" (expected bool)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"use angel-pc\" (expected bool)")
     should_exit_prematurely = True
 if not pr__ExecName_t:
-    print("project.json -> INCORRECT TYPE for \"executable name\" (expected str)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"executable name\" (expected str)")
     should_exit_prematurely = True
 if not pr__ExecNameW_t:
-    print("project.json -> INCORRECT TYPE for \"executable name (windows)\" (expected str)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"executable name (windows)\" (expected str)")
     should_exit_prematurely = True
 if not pr__CStand_t:
-    print("project.json -> INCORRECT TYPE for \"C standard\" (expected str)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"C standard\" (expected str)")
     should_exit_prematurely = True
 if not pr__libraries_t:
-    print("project.json -> INCORRECT TYPE for \"libraries\" (expected list)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"libraries\" (expected list)")
     should_exit_prematurely = True
 if not pr__libraries_sub_t:
-    print("project.json -> INCORRECT TYPE for one or more items in \"libraries\" \
-    (expected list of str)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for one or more items in \"libraries\" \
+    (expected list pr__angelPcof str)")
     should_exit_prematurely = True
 if not pr__warnings_t:
-    print("project.json -> INCORRECT TYPE for \"warnings\" (expected list)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"warnings\" (expected list)")
     should_exit_prematurely = True
 if not pr__warnings_sub_t:
-    print("project.json -> INCORRECT TYPE for one or more items in \"warnings\" \
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for one or more items in \"warnings\" \
     (expected list of str)")
     should_exit_prematurely = True
 if not pr__debug_level_t:
-    print("project.json -> INCORRECT TYPE for \"debug level\" (expected int)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"debug level\" (expected int)")
     should_exit_prematurely = True
 if not pr__debug_flags_t:
-    print("project.json -> INCORRECT TYPE for \"debug flags\" (expected list)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"debug flags\" (expected list)")
     should_exit_prematurely = True
 if not pr__debug_flags_sub_t:
-    print("project.json -> INCORRECT TYPE for one or more items in \"debug flags\" \
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for one or more items in \"debug flags\" \
     (expected list of str)")
     should_exit_prematurely = True
 if not pr__opt_lvl_t:
-    print("project.json -> INCORRECT TYPE for \"optimization level\" (expected str)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"optimization level\" (expected str)")
     should_exit_prematurely = True
 if not pr__add_flags_t:
-    print("project.json -> INCORRECT TYPE for \"additional flags\" (expected list)")
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"additional flags\" (expected list)")
     should_exit_prematurely = True
 if not pr__add_flags_sub_t:
-    print("project.json -> INCORRECT TYPE for one or more items in \"additional flags\" \
+    print(f"AngelBD ! project.json -> INCORRECT TYPE for one or more items in \"additional flags\" \
     (expected list of str)")
     should_exit_prematurely = True
 
 if should_exit_prematurely:
-	print("Compilation failed as properties are of wrong types in project.json")
-	print("Use 'angel-bd --json' to see an example project.json file")
+	print(f"AngelBD ! Compilation failed as properties are of wrong types in project.json")
+	print( "          Use 'angel-bd --json' to see an example project.json file")
 	sys.exit()
 
 ###
@@ -410,19 +410,28 @@ contains_libheads = \
 contains_all = contains_src  and contains_headers
 
 if not contains_libs:
-	print("Missing libraries/ folder\n  However this is optional\n  (angel-bd --help for info)")
+	print("AngelBD : Missing libraries/ folder")
+	print("           However this is optional")
+	print("           (angel-bd --help for info)")
 if not contains_libheads:
-	print("Missing library_headers/ folder\n  However this is optional\n  (angel-bd --help for info)")
+	print("AngelBD : Missing library_headers/ folder")
+	print("           However this is optional")
+	print("           (angel-bd --help for info)")
 	
 if not contains_all:
-	print("Build Failed")
+	print("AngelBD ! Build Failed")
 	if not contains_src:
-		print("Missing src/ folder (angel-bd --help for info)")
+		print("           Missing src/ folder")
+		print("           (angel-bd --help for info)")
 	if not contains_headers:
-		print("Missing headers/ folder (angel-bd --help for info)")
+		print("           Missing headers/ folder")
+		print("           (angel-bd --help for info)")
 	sys.exit()
 else:
-	print("src/, headers/, libraries/ and library_headers/ folders found!")
+	print("AngelBD : src/, ")
+	print("           headers/, ")
+	print("           libraries/ and ")
+	print("           library_headers/ folders found!")
 
 
 #
@@ -485,9 +494,9 @@ tomake_folders_src = [os.path.dirname(src_file) \
 #
 if os.path.exists(generated_folder):
 	shutil.rmtree(generated_folder)
-	print("generated/ directory structure cleaned")
+	print("AngelBD : generated/ directory structure cleaned")
 else:
-	print("generated/ directory allready clean")
+	print("AngelBD : generated/ directory allready clean")
 
 
 #
@@ -495,18 +504,20 @@ else:
 #
 for a_folder in tomake_folders_src:
 	os.makedirs(a_folder, exist_ok=True)
-print("generated/ directory structure made")
+print("AngelBD : generated/ directory structure made")
 
 
 #
 #Checks if angel-pc is installed
 #
-if not shutil.which("angel-pc"):
-    print("Build Failed")
-    print("The Angel PreCompiler is not installed on your system")
-    print("(or is not setup in you PATH environment variable)")
-    print("Please reinstall Angel Development Tools and try again!")
+if project_settings["use angel-pc"] and not shutil.which("angel-pc"):
+    print("AngelBD ! Build Failed")
+    print("           The Angel PreCompiler is not installed on your system")
+    print("           (or is not setup in you PATH environment variable)")
+    print("           Please reinstall Angel Development Tools and try again!")
     sys.exit()
+if not project_settings["use angel-pc"]:
+    print("AngelBD : project.json configured to not use AngelPC")
 
 
 #
@@ -521,15 +532,19 @@ for i in range(0, len(generated_files)):
 #Precompiles the files
 #
 if project_settings["use angel-pc"] == True:
+	#print()
 	commands_to_execute = [ "angel-pc " + og_file + " -o " + og_to_gen[og_file] \
 							for og_file in og_files]
 	i = 0
 	for command in commands_to_execute:
 		result = subprocess.run(command, shell=True, capture_output=True, text=True)
-		print("----Precompiled " + og_files[i] + " to " + og_to_gen[og_files[i]])
+		pc_out = result.stdout
+		print(pc_out, end="")
+		print("AngelBD : (----Precompiled " + og_files[i] + " to " + og_to_gen[og_files[i]] + ")")
 		i += 1
+	#print()
 else:
-	print("Precompilation skipped")
+	print("AngelBD : Precompilation skipped")
 	for og_file in og_files:
 		shutil.copyfile(og_file, og_to_gen[og_file])
 		print("----Copied " + og_file + " to " + og_to_gen[og_file])
@@ -550,11 +565,21 @@ else:
 #Checks if gcc is installed
 #
 if not shutil.which("gcc"):
-    print("Build Failed")
-    print("GCC is not installed or installed incorrectly")
-    print("Please (re)install GCC!")
+    print("AngelBD ! Build Failed")
+    print("          GCC is not installed or installed incorrectly")
+    print("          Please (re)install GCC!")
     sys.exit()
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 #
 #Create the gcc command we shall execute
@@ -594,23 +619,29 @@ compile_command += " "
 for the_src_file in generated_src_files:
 	compile_command += the_src_file + " "
 
-print(compile_command)
+#print(compile_command)
 
 #
 #Remove old executable
 #
 if os.path.exists(executable_file):
-	print("Deleting old executable file")
+	print("AngelBD : Deleting old executable file")
 	os.remove(executable_file)
 
 #
 #Compile
 #
 
-print("Calling GCC to compile")
+print("AngelBD : Calling GCC to compile")
 result = subprocess.run(compile_command, shell=True, capture_output=True, text=True)
-print("GCC Output :", result.stdout)
-print("GCC Error  :", result.stderr)
+
+print("")
+
+print("GCC Output :\n", result.stdout)
+
+print("")
+
+print("GCC Error  :\n", result.stderr)
 
 #
 #Summary
@@ -618,10 +649,9 @@ print("GCC Error  :", result.stderr)
 
 print("")
 if os.path.exists(executable_file):
-	print("Compilation appears to have been a SUCCESS!")
+	print("AngelBD : Compilation appears to have been a SUCCESS!")
 else:
-	print("Compilation appears to have FAILED!")
-print("")
+	print("AngelBD : Compilation appears to have FAILED!")
 
 
 
