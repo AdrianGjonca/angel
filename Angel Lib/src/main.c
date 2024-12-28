@@ -1,12 +1,19 @@
 ```
 echo `You are compiling the version for Unit testing`;
+
+
+alias `SafeString` is `angel::strings::SafeString`;
+alias `str` is `angel::strings`;
 ```
 
 #include<stdio.h>
 #include<stdbool.h>
-#include<angel/memory.h>
 #include<stdint.h>
 #include<stddef.h>
+
+#include<angel/memory.h>
+#include<angel/strings.h>
+#include <string.h>
 
 #define KiB 1024L
 #define TiB 1024L * 1024L * 1024L * 1024L
@@ -87,6 +94,40 @@ bool unit_test005() {
 }
 
 /////////////////////////
+/*
+ * Takes "Hello" repeats 5* and sees if it became "HelloHelloHelloHelloHello"
+ */
+bool unit_test006() {
+	char ____001[1024];
+	`SafeString` a = `str`::new(
+		1024,
+		false,
+		____001
+	);
+	strcpy(a.data, "Hello");
+	
+	a@`str`::repeat(5);
+	
+	return strcmp("HelloHelloHelloHelloHello", a.data) == 0;
+}
+
+/*
+ * Like 006 but uses the INIT_SAFE_STRING macro
+ */
+bool unit_test007() {
+	
+	`str`::INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	a@`str`::repeat(5);
+	
+	return strcmp("HelloHelloHelloHelloHello", a.data) == 0;
+}
+
+/////////////////////////
 
 void runUnitTests() {
 	printf("Check of SIZE_MAX required for TEST 004\n");
@@ -106,11 +147,20 @@ void runUnitTests() {
 	printf("TEST 003 : %s\n", unit_test003() ? "SUCCESS" : "FAILURE");
 	printf("TEST 004 : %s\n", unit_test004() ? "SUCCESS" : "FAILURE");
 	printf("TEST 005 : %s\n", unit_test005() ? "SUCCESS" : "FAILURE");
+	
+	printf("\n");
+	printf("#angel::strings#\n");
+	printf("TEST 006 : %s\n", unit_test006() ? "SUCCESS" : "FAILURE");
+	printf("TEST 007 : %s\n", unit_test007() ? "SUCCESS" : "FAILURE");
 }
 
+void __test() {
+	
+}
 
 int main() {
 	runUnitTests();
+	//__test();
 	return 0;
 }
 

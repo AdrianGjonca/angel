@@ -171,7 +171,7 @@ def handle_chains(code):
         
         endContent = endToken + 1 # lalala([d]adada
         bracket_lvl = 1
-
+        
         has_comma = False
         
         while bracket_lvl > 0 and endContent < len(code_internal):
@@ -201,10 +201,15 @@ def handle_chains(code):
         CONTENT = code_internal[endToken + 1:endContent - 1]
         #print("CONTENT: " + CONTENT)
         
+        #print("." + str(has_comma))
+        
+        if CONTENT and CONTENT.strip():
+        	has_comma = True # A hack fix
+        
         return code_internal[:beginLHS] + \
             TOKEN + "(" + LHS + ("," if has_comma else "") + CONTENT + ")" \
             + code_internal[endContent:]
-    
+    	
     ################################################
     
     all_the_ats = get_at_sym_loc(code)

@@ -34,7 +34,7 @@ extern intmax_t angel_0mem_0getHeapSize(void);
  * 
  * @param size the amount of bytes to allocate
  * @param tag the tag to associate with this chunk
- * @returns the angel_0MemorySector of the allocated memory
+ * @returns the angel_0mem_0MemorySector of the allocated memory
  */
 extern angel_0mem_0MemoryChunk angel_0mem_0allocate(size_t size, char * tag);
 
