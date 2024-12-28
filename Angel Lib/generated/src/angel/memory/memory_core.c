@@ -1,3 +1,8 @@
+//PREFIX SECTION
+//PREFIX SECTION
+//PREFIX SECTION
+
+
 #include <angel/memory.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -40,7 +45,7 @@ angel_0mem_0MemoryChunk angel_0mem_0allocate(size_t size, char * tag) {
 	return output;
 }
 
-void angel_0mem_0free( angel_0mem_0MemoryChunk chunk ) {
+void angel_0mem_0free(angel_0mem_0MemoryChunk chunk) {
 	if( angel_0mem_0isSuccess(chunk) ) {
 		free(chunk.data);
 		_current_heapsize -= chunk.size;
@@ -57,7 +62,7 @@ void angel_0mem_0free( angel_0mem_0MemoryChunk chunk ) {
 	}
 }
 
-bool angel_0mem_0isSuccess( angel_0mem_0MemoryChunk chunk ) {
+bool angel_0mem_0isSuccess(angel_0mem_0MemoryChunk chunk) {
 	return chunk.data != NULL;
 }
 
