@@ -1,11 +1,63 @@
 {
-Message System
-}
-
-{
 Bitmap System
 }
 
 {
 Str Tools
+	{
+	Basic String Functionality
+		{
+		Length
+		}
+		{
+		Concatenation
+		}
+		
+		
+		{
+		Substring
+		}
+		{
+		IndexOf
+		}
+		{
+		Contains
+		}
+		{
+		StartsWith/EndsWith
+		}
+		
+		
+		{
+		Replace
+		}
+		{
+		Trim
+		}
+		{
+		Pad
+		}
+		{
+		Insert
+		}
+		
+		{
+		ToUpperCase
+		}
+		{
+		ToLowerCase
+		}
+		{
+		Capitalize
+		}
+		
+		{
+		Splitting (req lists)
+		}
+		{
+		Joining (req lists)
+		}
+		
+		//Can do more like regex and format
+	}
 }

@@ -9,19 +9,6 @@ alias `SafeString` is `angel::strings::SafeString`;
 #include <stddef.h>
 #include <string.h>
 
-`SafeString` `self`::new(
-	size_t	maxSize,
-	bool	onHeap,
-	char * 	data
-) {
-	struct `SafeString` output = {
-		maxSize,
-		false,
-		onHeap,
-		data
-	};
-	
-	return output;
+size_t `self`::getLength(`SafeString` myself) {
+	return strlen(myself.data);
 }
-
-

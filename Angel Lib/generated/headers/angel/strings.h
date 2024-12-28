@@ -55,5 +55,56 @@ extern angel_0strings_0SafeString angel_0strings_0repeat(
 	angel_0strings_0SafeString to_manipulate,
 	unsigned int n
 );
+
+
+
+
+
+
+/////////////////////////
+// MUTATORS
+/////////////////////////
+
+/**
+ * TODO write this
+ * this is destructive!!
+ */
+extern angel_0strings_0SafeString angel_0strings_0repeat(
+	angel_0strings_0SafeString to_manipulate,
+	unsigned int n
+);
+
+
+
+
+
+
+/////////////////////////
+// ACCESSORS
+/////////////////////////
+
+/**
+ * TODO write this
+ */
+extern size_t angel_0strings_0getLength(angel_0strings_0SafeString myself);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #endif
 

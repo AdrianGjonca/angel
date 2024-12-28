@@ -129,6 +129,20 @@ bool unit_test007() {
 	return strcmp("HelloHelloHelloHelloHello", a.data) == 0;
 }
 
+/*
+ * Checks if getLength works
+ */
+bool unit_test008() {
+	
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	return angel_0strings_0getLength(a) == 5;
+}
+
 /////////////////////////
 
 void runUnitTests() {
@@ -154,6 +168,7 @@ void runUnitTests() {
 	printf("#angel::strings#\n");
 	printf("TEST 006 : %s\n", unit_test006() ? "SUCCESS" : "FAILURE");
 	printf("TEST 007 : %s\n", unit_test007() ? "SUCCESS" : "FAILURE");
+	printf("TEST 008 : %s\n", unit_test008() ? "SUCCESS" : "FAILURE");
 }
 
 void __test() {

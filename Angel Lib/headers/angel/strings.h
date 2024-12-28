@@ -55,4 +55,55 @@ extern angel::strings::SafeString angel::strings::repeat(
 	angel::strings::SafeString to_manipulate,
 	unsigned int n
 );
+
+
+
+
+
+
+/////////////////////////
+// MUTATORS
+/////////////////////////
+
+/**
+ * TODO write this
+ * this is destructive!!
+ */
+extern angel::strings::SafeString angel::strings::repeat(
+	angel::strings::SafeString to_manipulate,
+	unsigned int n
+);
+
+
+
+
+
+
+/////////////////////////
+// ACCESSORS
+/////////////////////////
+
+/**
+ * TODO write this
+ */
+extern size_t angel::strings::getLength(angel::strings::SafeString myself);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #endif
