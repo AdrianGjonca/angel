@@ -39,9 +39,12 @@ extern angel_0strings_0SafeString angel_0strings_0new(
 	char * 	data
 );
 
+/**
+ * TODO write this
+ */
 #define angel_0strings_0INIT_SAFE_STRING(name, size, value) \
-    char name##_buffer[size]; \
-    angel_0strings_0SafeString name = angel_0strings_0new(size, false, name##_buffer); \
+    char _______##name##_buffer[size]; \
+    angel_0strings_0SafeString name = angel_0strings_0new(size, false, _______##name##_buffer); \
     strcpy(name.data, value)
 
 /**

@@ -44,7 +44,7 @@ extern angel::strings::SafeString angel::strings::new(
  */
 #define angel::strings::INIT_SAFE_STRING(name, size, value) \
     char _______##name##_buffer[size]; \
-    angel::strings::SafeString name = angel::strings::new(size, false, name##_buffer); \
+    angel::strings::SafeString name = angel::strings::new(size, false, _______##name##_buffer); \
     strcpy(name.data, value)
 
 /**

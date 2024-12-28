@@ -1,6 +1,7 @@
 ```
 echo `You are compiling the version for Unit testing`;
 
+alias `mem` is `angel::mem`;
 
 alias `SafeString` is `angel::strings::SafeString`;
 alias `str` is `angel::strings`;
