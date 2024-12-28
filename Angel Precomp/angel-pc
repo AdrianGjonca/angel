@@ -3,8 +3,24 @@
 import re
 import sys
 
+#I need to find a windows solution unfortunately
+class Color:
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    MAGENTA = "\033[35m"
+    CYAN = "\033[36m"
+    WHITE = "\033[37m"
+
+def erPrint(text):
+	print(Color.BOLD + Color.RED + text + Color.RESET)
+
 if len(sys.argv) < 2:
-    print("Angel PreCompiler cannot work if you don't give me a source file :(")
+    erPrint("Angel PreCompiler cannot work if you don't give me a source file :(")
     sys.exit(2)
 
 filename = sys.argv[1]
@@ -417,12 +433,12 @@ def swap_aliases(aliases, c_code):
             if alias in aliases:
                 outCode += aliases[alias] + c_code[position]
             elif "\n" in alias:
-                print(f"AngelPC : |{filename}| ! Alias contains newline characters!")
-                print(f"                         Alias `{alias}` is malformed")
+                erPrint(f"AngelPC : |{filename}| ! Alias contains newline characters!")
+                erPrint(f"                         Alias `{alias}` is malformed")
                 sys.exit(1)
             else:
-                print(f"AngelPC : |{filename}| ! Alias undefined")
-                print(f"                         Alias `{alias}` is undefined")
+                erPrint(f"AngelPC : |{filename}| ! Alias undefined")
+                erPrint(f"                         Alias `{alias}` is undefined")
                 sys.exit(1)
             #outCode += "|"
         
@@ -490,8 +506,8 @@ def handle_prefix(prefix, c_code):
         out_code = swap_aliases(aliases, out_code)
     else: 
         #TODO implement better error messages (needn't be amazing)
-        print(f"AngelPC : |{filename}| ! Prefix-section issue")
-        print( "                         An 'alias' statement has been incorrectly formatted")
+        erPrint(f"AngelPC : |{filename}| ! Prefix-section issue")
+        erPrint( "                         An 'alias' statement has been incorrectly formatted")
         sys.exit(1)
     
     ##
@@ -508,11 +524,12 @@ def handle_prefix(prefix, c_code):
             break
     if alias_formatted_correctly:
         for item in echo_statements:
-            print(f"AngelPC : |{filename}| - {item[1][1:-1]}")
+            print(f"AngelPC : |{filename}| - {Color.YELLOW}{Color.BOLD}{Color.UNDERLINE}"+
+                  f"{item[1][1:-1]}{Color.RESET}")
     else: 
         #TODO implement better error messages (needn't be amazing)
-        print(f"AngelPC : |{filename}| ! Prefix-section issue")
-        print( "                         An 'echo' statement has been incorrectly formatted")
+        erPrint(f"AngelPC : |{filename}| ! Prefix-section issue")
+        erPrint( "                         An 'echo' statement has been incorrectly formatted")
         sys.exit(1)
     
     ##
@@ -544,7 +561,7 @@ def handle_code(code):
     
     split_code = split_prefix(code)
     if split_code == None:
-        print(f"AngelPC : |{filename}| ! Error with formatting of prefix section of file")
+        erPrint(f"AngelPC : |{filename}| ! Error with formatting of prefix section of file")
         sys.exit(1)
     
     transformed_code = handle_prefix(split_code[0], split_code[1])
@@ -562,7 +579,7 @@ def handle_code(code):
 
 if should_outputToFile:
     if len(sys.argv) < 4:
-        print("Angel PreCompiler cannot output to file if you don't tell me where to output :(")
+        erPrint("Angel PreCompiler cannot output to file if you don't tell me where to output :(")
         sys.exit(1)
 
 try:
@@ -575,10 +592,10 @@ try:
         else:
             print(transformed_code)
 except FileNotFoundError:
-    print("AngelPC : |{filename}| ! The file does not exist!")
+    erPrint("AngelPC : |{filename}| ! The file does not exist!")
     sys.exit(2)
 except IOError:
-    print("AngelPC : |{filename}| ! An error occurred while loading the file!")
+    erPrint("AngelPC : |{filename}| ! An error occurred while loading the file!")
     sys.exit(5)
 
 
