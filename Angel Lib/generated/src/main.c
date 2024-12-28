@@ -5,6 +5,7 @@
 //PREFIX SECTION
 //PREFIX SECTION
 //PREFIX SECTION
+//PREFIX SECTION
 
 
 #include<stdio.h>
@@ -23,20 +24,20 @@
  * Checks if the heap is empty at the beginning of the program
  */
 bool unit_test001() {
-	intmax_t A = angel_0mem_0getHeapSize();
+	intmax_t A = angel_0memory_0getHeapSize();
 	return A == 0;
 }
 
-angel_0mem_0MemoryChunk _chunk001;
+angel_0memory_0MemoryChunk _chunk001;
 /*
  * Checks if the heap is incremented by 85 when we create memory chunk of 85
  */
 bool unit_test002() {
 	intmax_t A, B;
 	
-	A = angel_0mem_0getHeapSize();
-	_chunk001 = angel_0mem_0allocate(85, "Placeholder Tag");
-	B = angel_0mem_0getHeapSize();
+	A = angel_0memory_0getHeapSize();
+	_chunk001 = angel_0memory_0allocate(85, "Placeholder Tag");
+	B = angel_0memory_0getHeapSize();
 	
 	return (B-A) == 85;
 }
@@ -45,23 +46,23 @@ bool unit_test002() {
  * Checks (the obvious) that _chunk001 had been alocated successfully - which would have been the case if 001 succeeded.
  */
 bool unit_test003() {
-	return angel_0mem_0isSuccess(_chunk001);
+	return angel_0memory_0isSuccess(_chunk001);
 }
 
 /*
  * Attempts to allocate an insanely large chunk and 'hopefully' said allocation should fail
  */
 bool unit_test004() {
-	angel_0mem_0MemoryChunk a_chunk;
+	angel_0memory_0MemoryChunk a_chunk;
 	
-	a_chunk = angel_0mem_0allocate(
+	a_chunk = angel_0memory_0allocate(
 		/*
 		 * Allocation of 1 TiB of memory should fail on most (reasonable) systems
 		 */
 		TiB, 
 		"Placeholder Tag"
 	);
-	return !angel_0mem_0isSuccess(a_chunk);
+	return !angel_0memory_0isSuccess(a_chunk);
 }
 
 /*
@@ -69,26 +70,26 @@ bool unit_test004() {
  * Also checks that memory returns to normal after the deallocations
  */
 bool unit_test005() {
-	angel_0mem_0MemoryChunk chunks[1000];
+	angel_0memory_0MemoryChunk chunks[1000];
 	intmax_t A, B, C;
 	uint16_t i;
 	
-	A = angel_0mem_0getHeapSize();
+	A = angel_0memory_0getHeapSize();
 	
 	for(i = 0; i<1000; i++) {
-		chunks[i] = angel_0mem_0allocate(KiB, "Placeholder Tag");
-		if(!angel_0mem_0isSuccess(chunks[i])){
+		chunks[i] = angel_0memory_0allocate(KiB, "Placeholder Tag");
+		if(!angel_0memory_0isSuccess(chunks[i])){
 			return false;
 		}
 	}
 	
-	B = angel_0mem_0getHeapSize();
+	B = angel_0memory_0getHeapSize();
 	
 	for(i = 0; i<1000; i++) {
-		angel_0mem_0free(chunks[i]);
+		angel_0memory_0free(chunks[i]);
 	}
 	
-	C = angel_0mem_0getHeapSize();
+	C = angel_0memory_0getHeapSize();
 	
 	return (A == C) && (B - A == 1000 * KiB);
 	

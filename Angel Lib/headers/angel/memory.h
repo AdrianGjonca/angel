@@ -12,9 +12,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-typedef struct angel::mem::MemoryChunk		angel::mem::MemoryChunk;
+typedef struct angel::memory::MemoryChunk		angel::memory::MemoryChunk;
 
-struct angel::mem::MemoryChunk {
+struct angel::memory::MemoryChunk {
 	char tag[1024]; //Currently set at 1024, doubt it needs to be bigger. Likely ought to be smaller
 	size_t size;
 	void * data;
@@ -27,29 +27,29 @@ struct angel::mem::MemoryChunk {
  * 
  * @returns number of bytes allocated on heap by Angel Lib
  */
-extern intmax_t angel::mem::getHeapSize(void);
+extern intmax_t angel::memory::getHeapSize(void);
 
 /**
  * @brief allocates a region of memory with a certain tag
  * 
  * @param size the amount of bytes to allocate
  * @param tag the tag to associate with this chunk
- * @returns the angel::mem::MemorySector of the allocated memory
+ * @returns the angel::memory::MemorySector of the allocated memory
  */
-extern angel::mem::MemoryChunk angel::mem::allocate(size_t size, char * tag);
+extern angel::memory::MemoryChunk angel::memory::allocate(size_t size, char * tag);
 
 /**
  * @brief frees a region of memory with a certain tag
  * If the memory chunk was a failed allocation this does nothing 
  * @param chunk the memory chunk to free
  */
-extern void angel::mem::free(angel::mem::MemoryChunk chunk);
+extern void angel::memory::free(angel::memory::MemoryChunk chunk);
 
 /**
  * @breif checks if a memory chunk was a successfull alocation or not
  * @return TRUE if successful allocation, FALSE if not
  */
-extern bool angel::mem::isSuccess(angel::mem::MemoryChunk chunk);
+extern bool angel::memory::isSuccess(angel::memory::MemoryChunk chunk);
 
 /**
  * @breif Configures if the memory-manager should be verbose or not
@@ -57,7 +57,7 @@ extern bool angel::mem::isSuccess(angel::mem::MemoryChunk chunk);
  * Non-verbose means there is no terminal output by the memory management system
  * @param verbose TRUE for verbose, FALSE for non-verbose
  */
-extern void angel::mem::setVerbose(bool verbose);
+extern void angel::memory::setVerbose(bool verbose);
 
 #endif
 

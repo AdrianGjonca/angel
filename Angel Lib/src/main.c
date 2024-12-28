@@ -1,7 +1,8 @@
 ```
 echo `You are compiling the version for Unit testing`;
 
-alias `mem` is `angel::mem`;
+alias `mem` is `angel::memory`;
+alias `MemoryChunk` is `angel::memory::MemoryChunk`;
 
 alias `SafeString` is `angel::strings::SafeString`;
 alias `str` is `angel::strings`;
@@ -23,20 +24,20 @@ alias `str` is `angel::strings`;
  * Checks if the heap is empty at the beginning of the program
  */
 bool unit_test001() {
-	intmax_t A = angel::mem::getHeapSize();
+	intmax_t A = `mem`::getHeapSize();
 	return A == 0;
 }
 
-angel::mem::MemoryChunk _chunk001;
+`MemoryChunk` _chunk001;
 /*
  * Checks if the heap is incremented by 85 when we create memory chunk of 85
  */
 bool unit_test002() {
 	intmax_t A, B;
 	
-	A = angel::mem::getHeapSize();
-	_chunk001 = angel::mem::allocate(85, "Placeholder Tag");
-	B = angel::mem::getHeapSize();
+	A = `mem`::getHeapSize();
+	_chunk001 = `mem`::allocate(85, "Placeholder Tag");
+	B = `mem`::getHeapSize();
 	
 	return (B-A) == 85;
 }
@@ -45,23 +46,23 @@ bool unit_test002() {
  * Checks (the obvious) that _chunk001 had been alocated successfully - which would have been the case if 001 succeeded.
  */
 bool unit_test003() {
-	return angel::mem::isSuccess(_chunk001);
+	return `mem`::isSuccess(_chunk001);
 }
 
 /*
  * Attempts to allocate an insanely large chunk and 'hopefully' said allocation should fail
  */
 bool unit_test004() {
-	angel::mem::MemoryChunk a_chunk;
+	`MemoryChunk` a_chunk;
 	
-	a_chunk = angel::mem::allocate(
+	a_chunk = `mem`::allocate(
 		/*
 		 * Allocation of 1 TiB of memory should fail on most (reasonable) systems
 		 */
 		TiB, 
 		"Placeholder Tag"
 	);
-	return !angel::mem::isSuccess(a_chunk);
+	return !`mem`::isSuccess(a_chunk);
 }
 
 /*
@@ -69,26 +70,26 @@ bool unit_test004() {
  * Also checks that memory returns to normal after the deallocations
  */
 bool unit_test005() {
-	angel::mem::MemoryChunk chunks[1000];
+	`MemoryChunk` chunks[1000];
 	intmax_t A, B, C;
 	uint16_t i;
 	
-	A = angel::mem::getHeapSize();
+	A = `mem`::getHeapSize();
 	
 	for(i = 0; i<1000; i++) {
-		chunks[i] = angel::mem::allocate(KiB, "Placeholder Tag");
-		if(!angel::mem::isSuccess(chunks[i])){
+		chunks[i] = `mem`::allocate(KiB, "Placeholder Tag");
+		if(!`mem`::isSuccess(chunks[i])){
 			return false;
 		}
 	}
 	
-	B = angel::mem::getHeapSize();
+	B = `mem`::getHeapSize();
 	
 	for(i = 0; i<1000; i++) {
-		chunks[i]@angel::mem::free();
+		chunks[i]@`mem`::free();
 	}
 	
-	C = angel::mem::getHeapSize();
+	C = `mem`::getHeapSize();
 	
 	return (A == C) && (B - A == 1000 * KiB);
 	

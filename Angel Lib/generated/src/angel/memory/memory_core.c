@@ -11,7 +11,7 @@
 #include <string.h>
 #include <stdio.h>
 
-extern void _show_chunk(angel_0mem_0MemoryChunk chunk);
+extern void _show_chunk(angel_0memory_0MemoryChunk chunk);
 
 ////////////////
 
@@ -20,14 +20,14 @@ bool _verbose_mode = false;
 
 ////////////////
 
-intmax_t angel_0mem_0getHeapSize(void) {
+intmax_t angel_0memory_0getHeapSize(void) {
 	return _current_heapsize;
 }
 
-angel_0mem_0MemoryChunk angel_0mem_0allocate(size_t size, char * tag) {
+angel_0memory_0MemoryChunk angel_0memory_0allocate(size_t size, char * tag) {
 	void * data = calloc(1, size);
 	
-	angel_0mem_0MemoryChunk output;
+	angel_0memory_0MemoryChunk output;
 	
 	strcpy(output.tag, tag);
 	output.size = size;
@@ -45,8 +45,8 @@ angel_0mem_0MemoryChunk angel_0mem_0allocate(size_t size, char * tag) {
 	return output;
 }
 
-void angel_0mem_0free(angel_0mem_0MemoryChunk chunk) {
-	if( angel_0mem_0isSuccess(chunk) ) {
+void angel_0memory_0free(angel_0memory_0MemoryChunk chunk) {
+	if( angel_0memory_0isSuccess(chunk) ) {
 		free(chunk.data);
 		_current_heapsize -= chunk.size;
 		if(_verbose_mode) {
@@ -62,17 +62,17 @@ void angel_0mem_0free(angel_0mem_0MemoryChunk chunk) {
 	}
 }
 
-bool angel_0mem_0isSuccess(angel_0mem_0MemoryChunk chunk) {
+bool angel_0memory_0isSuccess(angel_0memory_0MemoryChunk chunk) {
 	return chunk.data != NULL;
 }
 
-void angel_0mem_0setVerbose(bool verbose) {
+void angel_0memory_0setVerbose(bool verbose) {
 	_verbose_mode = verbose;
 }
 
 ////////////////
 
-void _show_chunk(angel_0mem_0MemoryChunk chunk) {
+void _show_chunk(angel_0memory_0MemoryChunk chunk) {
 	printf("_HEAP_: %ju\n", _current_heapsize);
 	printf("TAG:    %s\n"  , chunk.tag);
 	printf("SIZE:   %zu\n" , chunk.size);

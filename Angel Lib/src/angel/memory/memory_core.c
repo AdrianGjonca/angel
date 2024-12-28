@@ -1,6 +1,6 @@
 ```
-alias `self` is `angel::mem`;
-alias `MemoryChunk` is `angel::mem::MemoryChunk`;
+alias `self` is `angel::memory`;
+alias `MemoryChunk` is `angel::memory::MemoryChunk`;
 ```
 
 #include <angel/memory.h>
@@ -11,7 +11,7 @@ alias `MemoryChunk` is `angel::mem::MemoryChunk`;
 #include <string.h>
 #include <stdio.h>
 
-extern void _show_chunk(angel::mem::MemoryChunk chunk);
+extern void _show_chunk(`MemoryChunk` chunk);
 
 ////////////////
 
