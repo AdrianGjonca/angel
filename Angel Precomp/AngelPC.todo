@@ -1,3 +1,7 @@
 {
 Correct Indentation on error messages!!
 }
+
+{
+Fix Bug: !(a@`str`::isFailure()) -> angel_0strings_0isFailure(!(a))
+}

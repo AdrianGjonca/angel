@@ -16,7 +16,7 @@ angel_0strings_0SafeString angel_0strings_0new(
 ) {
 	struct angel_0strings_0SafeString output = {
 		maxSize,
-		false,
+		(strlen(data) >= maxSize),
 		onHeap,
 		data
 	};

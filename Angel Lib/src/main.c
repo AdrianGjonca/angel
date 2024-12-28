@@ -108,7 +108,7 @@ bool unit_test006() {
 	);
 	strcpy(a.data, "Hello");
 	
-	a@`str`::repeat(5);
+	&a@`str`::repeat(5);
 	
 	return strcmp("HelloHelloHelloHelloHello", a.data) == 0;
 }
@@ -124,7 +124,7 @@ bool unit_test007() {
 		"Hello"
 	);
 	
-	a@`str`::repeat(5);
+	&a@`str`::repeat(5);
 	
 	return strcmp("HelloHelloHelloHelloHello", a.data) == 0;
 }
@@ -140,7 +140,7 @@ bool unit_test008() {
 		"Hello"
 	);
 	
-	return a@`str`::getLength() == 5;
+	return &a@`str`::getLength() == 5;
 }
 
 /*
@@ -154,9 +154,143 @@ bool unit_test009() {
 		"Hello"
 	);
 	
-	return a@`str`::getMaxLength() == 1024;
+	return &a@`str`::getMaxLength() == 1024;
 }
 
+/*
+ * Checks if isFailure works on creation of SafeString
+ */
+bool unit_test010() {
+	
+	`str`::INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	//Improper way
+	`SafeString` b = `str`::new( 
+		5,
+		false, 
+		"Hello"
+	);
+	
+	//Proper way
+	`str`::INIT_SAFE_STRING(
+		c,
+		5,
+		"Hello"
+	);
+	
+	printf("	test 010 : a (should be 0) => %d\n", &a@`str`::isFailure());
+	printf("	test 010 : b (should be 1) => %d\n", &b@`str`::isFailure());
+	printf("	test 010 : c (should be 1) => %d\n", &c@`str`::isFailure());
+	
+	return (! &a@`str`::isFailure()) && &b@`str`::isFailure() && &c@`str`::isFailure();
+}
+
+/*
+ * Checks if isFailure works on buffer overflow from ...repeat(n)
+ */
+bool unit_test011() {
+	`str`::INIT_SAFE_STRING(
+		a,
+		5,
+		"a"
+	);
+	
+	&a@`str`::repeat(66);
+	
+	//printf("%d\n", a.failed);
+	//return a.failed;
+	return &a@`str`::isFailure();
+}
+
+/*
+ * Checks if isOnHeap returns false for stack SafeString
+ */
+bool unit_test012() {
+	`str`::INIT_SAFE_STRING(
+		a,
+		5,
+		"a"
+	);
+	
+	return !( &a@`str`::isOnHeap() );
+}
+
+/*
+ * Checks if isOnStack returns true for stack SafeString
+ */
+bool unit_test013() {
+	`str`::INIT_SAFE_STRING(
+		a,
+		5,
+		"a"
+	);
+	
+	return &a@`str`::isOnStack();
+}
+
+/*
+ * Checks if ...repeat(0) returns ""
+ */
+bool unit_test014() {
+	
+	`str`::INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	&a@`str`::repeat(0);
+	
+	return strcmp("", &a@`str`::data()) == 0;
+}
+
+/*
+ * Checks if ...repeat(1) returns "Hello" when given "Hello"
+ */
+bool unit_test015() {
+	
+	`str`::INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	&a@`str`::repeat(1);
+	
+	return strcmp("Hello", &a@`str`::data() ) == 0;
+}
+
+/*
+ * Checks if ...data() accesses like .data
+ * "Hello" == "Hello"
+ */ 
+bool unit_test016() {
+	`str`::INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	return strcmp("Hello", &a@`str`::data() ) == 0;
+}
+
+/*
+ * Checks if ...data() accesses like .data
+ * "" == ""
+ */ 
+bool unit_test017() {
+	`str`::INIT_SAFE_STRING(
+		a,
+		1024,
+		""
+	);
+	
+	return strcmp("", &a@`str`::data() ) == 0;
+}
 /////////////////////////
 
 void runUnitTests() {
@@ -183,7 +317,15 @@ void runUnitTests() {
 	printf("TEST 006 : %s\n", unit_test006() ? "SUCCESS" : "FAILURE");
 	printf("TEST 007 : %s\n", unit_test007() ? "SUCCESS" : "FAILURE");
 	printf("TEST 008 : %s\n", unit_test008() ? "SUCCESS" : "FAILURE");
-	printf("TEST 009 : %s\n", unit_test008() ? "SUCCESS" : "FAILURE");
+	printf("TEST 009 : %s\n", unit_test009() ? "SUCCESS" : "FAILURE");
+	printf("TEST 010 : %s\n", unit_test010() ? "SUCCESS" : "FAILURE");
+	printf("TEST 011 : %s\n", unit_test011() ? "SUCCESS" : "FAILURE");
+	printf("TEST 012 : %s\n", unit_test012() ? "SUCCESS" : "FAILURE");
+	printf("TEST 013 : %s\n", unit_test013() ? "SUCCESS" : "FAILURE");
+	printf("TEST 014 : %s\n", unit_test014() ? "SUCCESS" : "FAILURE");
+	printf("TEST 015 : %s\n", unit_test015() ? "SUCCESS" : "FAILURE");
+	printf("TEST 016 : %s\n", unit_test016() ? "SUCCESS" : "FAILURE");
+	printf("TEST 017 : %s\n", unit_test017() ? "SUCCESS" : "FAILURE");
 }
 
 void __test() {

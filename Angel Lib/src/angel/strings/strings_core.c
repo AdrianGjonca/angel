@@ -16,7 +16,7 @@ alias `SafeString` is `angel::strings::SafeString`;
 ) {
 	struct `SafeString` output = {
 		maxSize,
-		false,
+		(strlen(data) >= maxSize),
 		onHeap,
 		data
 	};

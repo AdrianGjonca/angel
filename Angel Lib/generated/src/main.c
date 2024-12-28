@@ -108,7 +108,7 @@ bool unit_test006() {
 	);
 	strcpy(a.data, "Hello");
 	
-	angel_0strings_0repeat(a,5);
+	angel_0strings_0repeat(&a,5);
 	
 	return strcmp("HelloHelloHelloHelloHello", a.data) == 0;
 }
@@ -124,7 +124,7 @@ bool unit_test007() {
 		"Hello"
 	);
 	
-	angel_0strings_0repeat(a,5);
+	angel_0strings_0repeat(&a,5);
 	
 	return strcmp("HelloHelloHelloHelloHello", a.data) == 0;
 }
@@ -140,7 +140,7 @@ bool unit_test008() {
 		"Hello"
 	);
 	
-	return angel_0strings_0getLength(a) == 5;
+	return angel_0strings_0getLength(&a) == 5;
 }
 
 /*
@@ -154,9 +154,143 @@ bool unit_test009() {
 		"Hello"
 	);
 	
-	return angel_0strings_0getMaxLength(a) == 1024;
+	return angel_0strings_0getMaxLength(&a) == 1024;
 }
 
+/*
+ * Checks if isFailure works on creation of SafeString
+ */
+bool unit_test010() {
+	
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	//Improper way
+	angel_0strings_0SafeString b = angel_0strings_0new( 
+		5,
+		false, 
+		"Hello"
+	);
+	
+	//Proper way
+	angel_0strings_0INIT_SAFE_STRING(
+		c,
+		5,
+		"Hello"
+	);
+	
+	printf("	test 010 : a (should be 0) => %d\n", angel_0strings_0isFailure(&a));
+	printf("	test 010 : b (should be 1) => %d\n", angel_0strings_0isFailure(&b));
+	printf("	test 010 : c (should be 1) => %d\n", angel_0strings_0isFailure(&c));
+	
+	return (! angel_0strings_0isFailure(&a)) && angel_0strings_0isFailure(&b) && angel_0strings_0isFailure(&c);
+}
+
+/*
+ * Checks if isFailure works on buffer overflow from ...repeat(n)
+ */
+bool unit_test011() {
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		5,
+		"a"
+	);
+	
+	angel_0strings_0repeat(&a,66);
+	
+	//printf("%d\n", a.failed);
+	//return a.failed;
+	return angel_0strings_0isFailure(&a);
+}
+
+/*
+ * Checks if isOnHeap returns false for stack SafeString
+ */
+bool unit_test012() {
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		5,
+		"a"
+	);
+	
+	return !( angel_0strings_0isOnHeap(&a) );
+}
+
+/*
+ * Checks if isOnStack returns true for stack SafeString
+ */
+bool unit_test013() {
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		5,
+		"a"
+	);
+	
+	return angel_0strings_0isOnStack(&a);
+}
+
+/*
+ * Checks if ...repeat(0) returns ""
+ */
+bool unit_test014() {
+	
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	angel_0strings_0repeat(&a,0);
+	
+	return strcmp("", angel_0strings_0data(&a)) == 0;
+}
+
+/*
+ * Checks if ...repeat(1) returns "Hello" when given "Hello"
+ */
+bool unit_test015() {
+	
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	angel_0strings_0repeat(&a,1);
+	
+	return strcmp("Hello", angel_0strings_0data(&a) ) == 0;
+}
+
+/*
+ * Checks if ...data() accesses like .data
+ * "Hello" == "Hello"
+ */ 
+bool unit_test016() {
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	return strcmp("Hello", angel_0strings_0data(&a) ) == 0;
+}
+
+/*
+ * Checks if ...data() accesses like .data
+ * "" == ""
+ */ 
+bool unit_test017() {
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		1024,
+		""
+	);
+	
+	return strcmp("", angel_0strings_0data(&a) ) == 0;
+}
 /////////////////////////
 
 void runUnitTests() {
@@ -183,7 +317,15 @@ void runUnitTests() {
 	printf("TEST 006 : %s\n", unit_test006() ? "SUCCESS" : "FAILURE");
 	printf("TEST 007 : %s\n", unit_test007() ? "SUCCESS" : "FAILURE");
 	printf("TEST 008 : %s\n", unit_test008() ? "SUCCESS" : "FAILURE");
-	printf("TEST 009 : %s\n", unit_test008() ? "SUCCESS" : "FAILURE");
+	printf("TEST 009 : %s\n", unit_test009() ? "SUCCESS" : "FAILURE");
+	printf("TEST 010 : %s\n", unit_test010() ? "SUCCESS" : "FAILURE");
+	printf("TEST 011 : %s\n", unit_test011() ? "SUCCESS" : "FAILURE");
+	printf("TEST 012 : %s\n", unit_test012() ? "SUCCESS" : "FAILURE");
+	printf("TEST 013 : %s\n", unit_test013() ? "SUCCESS" : "FAILURE");
+	printf("TEST 014 : %s\n", unit_test014() ? "SUCCESS" : "FAILURE");
+	printf("TEST 015 : %s\n", unit_test015() ? "SUCCESS" : "FAILURE");
+	printf("TEST 016 : %s\n", unit_test016() ? "SUCCESS" : "FAILURE");
+	printf("TEST 017 : %s\n", unit_test017() ? "SUCCESS" : "FAILURE");
 }
 
 void __test() {

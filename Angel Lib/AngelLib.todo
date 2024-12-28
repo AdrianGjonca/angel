@@ -10,11 +10,17 @@ Str Tools
 		Length (DONE)
 		}
 		{
-		MaxLength
+		MaxLength (Done)
 		}
 		
 		{
 		Concatenation
+			{
+			Append
+			}
+			{
+			Prepend
+			}
 		}
 		
 		
