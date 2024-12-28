@@ -352,9 +352,9 @@ def get_statements(prefix):
     
     for i in range(len(statements)):
         statements[i] = statements[i] \
-    	                .replace("\n", "") \
-    	                .replace("\t", "    ") \
-    	                .strip()
+                        .replace("\n", "") \
+                        .replace("\t", "    ") \
+                        .strip()
     
     to_remove = []
     for a_str in statements:
@@ -409,7 +409,16 @@ def swap_aliases(aliases, c_code):
                 else:
                     alias += c_code[position]
                 position += 1
-            outCode += aliases[alias] + c_code[position]
+            if alias in aliases:
+                outCode += aliases[alias] + c_code[position]
+            elif "\n" in alias:
+                print(f"AngelPC : |{filename}| ! Alias contains newline characters!")
+                print(f"                         Alias `{alias}` is malformed")
+                sys.exit(1)
+            else:
+                print(f"AngelPC : |{filename}| ! Alias undefined")
+                print(f"                         Alias `{alias}` is undefined")
+                sys.exit(1)
             #outCode += "|"
         
         elif position>0 and c_code[position] == "/" and c_code[position-1] == "/":

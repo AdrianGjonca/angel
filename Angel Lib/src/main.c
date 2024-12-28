@@ -86,7 +86,9 @@ bool unit_test005() {
 	
 }
 
-int main() {
+/////////////////////////
+
+void runUnitTests() {
 	printf("Check of SIZE_MAX required for TEST 004\n");
 	printf("Required Size    %16lX\n", TiB);
 	printf("Max Size         %16lX\n", SIZE_MAX);
@@ -104,6 +106,11 @@ int main() {
 	printf("TEST 003 : %s\n", unit_test003() ? "SUCCESS" : "FAILURE");
 	printf("TEST 004 : %s\n", unit_test004() ? "SUCCESS" : "FAILURE");
 	printf("TEST 005 : %s\n", unit_test005() ? "SUCCESS" : "FAILURE");
+}
+
+
+int main() {
+	runUnitTests();
 	return 0;
 }
 
