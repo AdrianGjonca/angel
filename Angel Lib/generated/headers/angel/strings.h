@@ -86,7 +86,13 @@ extern angel_0strings_0SafeString angel_0strings_0repeat(
 /**
  * TODO write this
  */
-extern size_t angel_0strings_0getLength(angel_0strings_0SafeString myself);
+extern size_t angel_0strings_0getLength(
+	angel_0strings_0SafeString myself
+);
+
+extern size_t angel_0strings_0getMaxLength(
+	angel_0strings_0SafeString myself
+);
 
 
 

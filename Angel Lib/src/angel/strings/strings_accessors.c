@@ -12,3 +12,8 @@ alias `SafeString` is `angel::strings::SafeString`;
 size_t `self`::getLength(`SafeString` myself) {
 	return strlen(myself.data);
 }
+
+size_t `self`::getMaxLength(`SafeString` myself) {
+	return myself.maxSize;
+}
+

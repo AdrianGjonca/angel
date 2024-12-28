@@ -143,6 +143,20 @@ bool unit_test008() {
 	return angel_0strings_0getLength(a) == 5;
 }
 
+/*
+ * Checks if getMaxLength works
+ */
+bool unit_test009() {
+	
+	angel_0strings_0INIT_SAFE_STRING(
+		a,
+		1024,
+		"Hello"
+	);
+	
+	return angel_0strings_0getMaxLength(a) == 1024;
+}
+
 /////////////////////////
 
 void runUnitTests() {
@@ -169,6 +183,7 @@ void runUnitTests() {
 	printf("TEST 006 : %s\n", unit_test006() ? "SUCCESS" : "FAILURE");
 	printf("TEST 007 : %s\n", unit_test007() ? "SUCCESS" : "FAILURE");
 	printf("TEST 008 : %s\n", unit_test008() ? "SUCCESS" : "FAILURE");
+	printf("TEST 009 : %s\n", unit_test008() ? "SUCCESS" : "FAILURE");
 }
 
 void __test() {

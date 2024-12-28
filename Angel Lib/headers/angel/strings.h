@@ -86,7 +86,13 @@ extern angel::strings::SafeString angel::strings::repeat(
 /**
  * TODO write this
  */
-extern size_t angel::strings::getLength(angel::strings::SafeString myself);
+extern size_t angel::strings::getLength(
+	angel::strings::SafeString myself
+);
+
+extern size_t angel::strings::getMaxLength(
+	angel::strings::SafeString myself
+);
 
 
 

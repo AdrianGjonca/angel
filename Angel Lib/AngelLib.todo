@@ -7,8 +7,12 @@ Str Tools
 	{
 	Basic String Functionality
 		{
-		Length
+		Length (DONE)
 		}
+		{
+		MaxLength
+		}
+		
 		{
 		Concatenation
 		}

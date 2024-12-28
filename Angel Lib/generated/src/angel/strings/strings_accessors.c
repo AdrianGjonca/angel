@@ -13,3 +13,8 @@ size_t angel_0strings_0getLength(angel_0strings_0SafeString myself) {
 	return strlen(myself.data);
 }
 
+size_t angel_0strings_0getMaxLength(angel_0strings_0SafeString myself) {
+	return myself.maxSize;
+}
+
+
