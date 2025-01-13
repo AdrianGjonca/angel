@@ -4,12 +4,19 @@ echo "To uninstall just delete the files:"
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
-echo "    /bin/angel-pc"
-cp "$SCRIPT_DIR""/Angel Precomp/angel-pc" "/bin/angel-pc"
-chmod +x "/bin/angel-pc"
+#Correct legacy install
+rm -f /bin/angel-pc
+rm -f /bin/angel-bd
 
-echo "    /bin/angel-bd"
-cp "$SCRIPT_DIR""/Angel Builder/angel-bd" "/bin/angel-bd"
-chmod +x "/bin/angel-bd"
+#Main install section
+mkdir "/usr/local/bin/"
+
+echo "    /usr/local/bin/angel-pc"
+cp "$SCRIPT_DIR""/Angel Precomp/angel-pc" "/usr/local/bin/angel-pc"
+chmod +x "/usr/local/bin/angel-pc"
+
+echo "    /usr/local/bin/angel-bd"
+cp "$SCRIPT_DIR""/Angel Builder/angel-bd" "/usr/local/bin/angel-bd"
+chmod +x "/usr/local/bin/angel-bd"
 
 echo ""
