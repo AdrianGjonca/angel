@@ -94,9 +94,9 @@ import json
 
 ################################################
 ##
-## 
+##
 ## Functions
-## 
+##
 ##
 ################################################
 OPTION_REMOVECOMMENTS = True
@@ -109,7 +109,7 @@ def remove_json_comments(json_with_comments: str) -> str:
 	json_without_comments = re.sub(r'//.*', '', json_with_comments)
 	# Remove multi-line comments (/* ... */)
 	json_without_comments = re.sub(r'/\*.*?\*/', '', json_without_comments, flags=re.DOTALL)
-    
+	
 	if OPTION_NEATIFY:
 		return json_without_comments \
 		       .strip() \
@@ -118,32 +118,33 @@ def remove_json_comments(json_with_comments: str) -> str:
 	else:
 		return json_without_comments \
 		       .strip()
-    
+
 def get_directories(path):
 	#Chat GPT wrote this one line monstrosity
-    return [os.path.join(path, entry) \
-            for entry in os.listdir(path) \
-            if os.path.isdir(os.path.join(path, entry))]
+	return [os.path.join(path, entry) \
+		for entry in os.listdir(path) \
+		 if os.path.isdir(os.path.join(path, entry))]
 
 def get_directories_nameonly(path):
 	#Chat GPT wrote this one line monstrosity
-    return [entry for entry in os.listdir(path) \
-            if os.path.isdir(os.path.join(path, entry))]
+	return [entry for entry in os.listdir(path) \
+		if os.path.isdir(os.path.join(path, entry))]
 
 def get_all_file_paths(directory):
 	#Credit to big man Chat-GPT (I know f*ckall python :( )
-    file_paths = []
-    for root, _, files in os.walk(directory):
-        for file in files:
-            file_paths.append(os.path.join(root, file))
-    return file_paths
+	file_paths = []
+	for root, _, files in os.walk(directory):
+		for file in files:
+			if not file.endswith(".swp"): #fix for gnu-nano
+				file_paths.append(os.path.join(root, file))
+	return file_paths
 
 
 ################################################
 ##
-## 
+##
 ## Beginnings
-## 
+##
 ##
 ################################################
 if len(sys.argv) < 2:
@@ -570,7 +571,7 @@ if not shutil.which("gcc"):
     print("          Please (re)install GCC!")
     sys.exit()
 
-class bcolors:
+class bcolors: #I have no clue why i put this here (INVESTIGATE)
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'

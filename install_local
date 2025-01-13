@@ -7,7 +7,7 @@ echo ""
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 if [ -d "$HOME/bin" ]; then
-  rm -r "$HOME/bin"
+  rm -f "$HOME/bin/angel-*"
 fi
 
 mkdir "$HOME/bin"

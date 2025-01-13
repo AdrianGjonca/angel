@@ -108,7 +108,8 @@ bool unit_test006() {
 	);
 	strcpy(a.data, "Hello");
 	
-	angel_0strings_0repeat(&a,5);
+	angel_0strings_0repeat(&a, 5);
+	//&a@`str`::repeat(5);
 	
 	return strcmp("HelloHelloHelloHelloHello", a.data) == 0;
 }
