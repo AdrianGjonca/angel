@@ -87,6 +87,6 @@
 	 *
 	 * Example:    "excludes": ["test.c", "testlib.c", "testlib.h"]
 	 */
-	 "excludes"	: ["test.c"]
+	 "excludes"	: ["main.c"]
 }
 

@@ -10,7 +10,7 @@ if [ -d "$HOME/bin" ]; then
   rm -f "$HOME/bin/angel-*"
 fi
 
-mkdir "$HOME/bin"
+mkdir -p "$HOME/bin"
 
 echo "    ~/bin/angel-pc"
 cp "$SCRIPT_DIR""/Angel Precomp/angel-pc" "$HOME/bin/angel-pc"

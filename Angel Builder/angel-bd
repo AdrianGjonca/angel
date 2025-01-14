@@ -81,7 +81,16 @@ project_json_content = """
 	  * e.g.  "fsanitize=leak" -> "-fsanitize=leak"
 	  *       "shared"         -> "-shared"
 	  */
-	  "additional flags"	: []
+	  "additional flags"	: [],
+
+	/*
+	 * Excludes
+	 * 
+	 * All the file names to exclude
+	 *
+	 * Example:    "excludes": ["test.c", "testlib.c", "testlib.h"]
+	 */
+	 "excludes"	: []
 }
 """
 
@@ -130,12 +139,12 @@ def get_directories_nameonly(path):
 	return [entry for entry in os.listdir(path) \
 		if os.path.isdir(os.path.join(path, entry))]
 
-def get_all_file_paths(directory):
+def get_all_file_paths(directory, excludes):
 	#Credit to big man Chat-GPT (I know f*ckall python :( )
 	file_paths = []
 	for root, _, files in os.walk(directory):
 		for file in files:
-			if not file.endswith(".swp"): #fix for gnu-nano
+			if (not file.endswith(".swp")) and (not file in excludes):
 				file_paths.append(os.path.join(root, file))
 	return file_paths
 
@@ -153,6 +162,14 @@ if len(sys.argv) < 2:
 
 project_path = sys.argv[1]
 
+cfg_id = ""
+
+for s in sys.argv:
+	if s.startswith("-ID"):
+		cfg_id = "__" + s[3:]
+	if s.startswith("--ID"):
+		cfg_id = "__" + s[4:]
+
 if ("--json" in sys.argv):
 	print(project_json_content)
 	sys.exit()
@@ -163,7 +180,7 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("This is the Angel BuilDer command")
 	print("Use this to build your Angel-DT projects")
 	print("")
-	print("Syntax:")    
+	print("Syntax:")
 	print("         angel-bd [project-path]")
 	print("")
 	print("Required Project Layout:")
@@ -182,7 +199,7 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("         |     |")
 	print("         |     conatins any not-os-installed Static or Shared libraries")
 	print("         |     (the latter is unrecomended as Shared libraries still")
-	print("         |      need to be installed on the os level inorder to even")
+	print("         |      need cfg_idto be installed on the os level inorder to even")
 	print("         |      execute the program on your machine)")
 	print("         | ")
 	print("         |__library_headers/  (optional)")
@@ -191,7 +208,13 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("         |     Static or Shared libraries.")
 	print("         | ")
 	print("         |__project.json (optional) -> compilation settings (e.g.")
-	print("         :                             libraries, compiler flags etc)")
+	print("         |                             libraries, compiler flags etc)")
+	print("         |")
+	print("         |__project__[cfg-id].json (optional) -> Alternate version of project.json")
+	print("         :                                       Used for alternate compilation ")
+	print("         :                                       configurations.")
+	print("         :                                       Used with the -ID[cfg-id] flag.")
+	print("         :                                       Can be more than one alternate config")
 	print("         : ")
 	print("         :..generated/ ")
 	print("         :     :")
@@ -225,7 +248,7 @@ if os.path.isdir(project_path):
 	print(f"AngelBD : Project-Directory found |{project_path}|")
 	#Rest carried on after the if statement
 else:
-	print("AngelBD ! Directory not found")
+	print( "AngelBD ! Directory not found")
 	print(f"          Check path given |{project_path}|")
 	sys.exit()
 
@@ -235,17 +258,23 @@ else:
 #
 ###
 
-project_json_path   = os.path.join(project_path, "project.json")
+project_cfg_name = f"project{cfg_id}.json"
+project_json_path   = os.path.join(project_path, project_cfg_name)
 project_json_exists = os.path.isfile(project_json_path)
 if project_json_exists:
-	print(f"AngelBD : Project Settings found (project.json)")
+	print(f"AngelBD : Project Settings found ({project_cfg_name})")
+elif project_cfg_name != "":
+	print(f"AngelBD ! Compilation failed as ")
+	print(f"          Project Settings ({project_cfg_name}) not-found (and -ID was used)")
+	sys.exit()
 else:
-	print(f"AngelBD : Project Settings not-found (using default options)")
+	print(f"AngelBD : Project Settings ({project_cfg_name}) not-found (using default options)")
 
 project_settings = dict()
 
 if not project_json_exists:
-	project_settings = json.loads(remove_json_comments(project_json_content))
+	project_settings = json.loads(\
+		remove_json_comments(project_json_content))
 else:
     with open(project_json_path, 'r') as file:
     	project_settings = json.loads(remove_json_comments(file.read()))
@@ -264,42 +293,46 @@ pr__debug_level  = "debug level" in project_settings
 pr__debug_flags  = "debug flags" in project_settings
 pr__opt_lvl      = "optimization level" in project_settings
 pr__add_flags    = "additional flags" in project_settings
+pr__excludes     = "excludes" in project_settings
 
 should_exit_prematurely = False
 if not pr__angelPc:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"use angel-pc\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"use angel-pc\"")
+	should_exit_prematurely = True
 if not pr__ExecName:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"executable name\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"executable name\"")
+	should_exit_prematurely = True
 if not pr__ExecNameW:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"executable name (windows)\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"executable name (windows)\"")
+	should_exit_prematurely = True
 if not pr__CStand:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"C standard\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"C standard\"")
+	should_exit_prematurely = True
 if not pr__libraries:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"libraries\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"libraries\"")
+	should_exit_prematurely = True
 if not pr__warnings:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"warnings\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"warnings\"")
+	should_exit_prematurely = True
 if not pr__debug_level:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"debug level\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"debug level\"")
+	should_exit_prematurely = True
 if not pr__debug_flags:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"debug flags\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"debug flags\"")
+	should_exit_prematurely = True
 if not pr__opt_lvl:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"optimization level\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"optimization level\"")
+	should_exit_prematurely = True
 if not pr__add_flags:
-    print(f"AngelBD ! project.json -> MISSING PROPERTY \"additional flags\"")
-    should_exit_prematurely = True
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"additional flags\"")
+	should_exit_prematurely = True
+if not pr__excludes:
+	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"excludes\"")
+	should_exit_prematurely = True
 
 if should_exit_prematurely:
-	print(f"AngelBD ! Compilation failed as properties are missing from project.json")
-	print( "           Use 'angel-bd --json' to see an example project.json file")
+	print(f"AngelBD ! Compilation failed as properties are missing from project{cfg_id}.json")
+	print( "          Use 'angel-bd --json' to see an example project.json file")
 	sys.exit()
 
 #
@@ -333,51 +366,63 @@ pr__add_flags_sub_t = True
 if pr__add_flags_t:
 	for item in project_settings["additional flags"]:
 		pr__add_flags_sub_t = pr__add_flags_sub_t and type(item) is str
+pr__excludes_t    = type(project_settings["excludes"]) is list
+pr__excludes_sub_t = True
+if pr__excludes_t:
+	for item in project_settings["additional flags"]:
+		pr__excludes_sub_t = pr__excludes_sub_t and type(item) is str
 
 if not pr__angelPc_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"use angel-pc\" (expected bool)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"use angel-pc\" (expected bool)")
     should_exit_prematurely = True
 if not pr__ExecName_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"executable name\" (expected str)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"executable name\" (expected str)")
     should_exit_prematurely = True
 if not pr__ExecNameW_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"executable name (windows)\" (expected str)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"executable name (windows)\" (expected str)")
     should_exit_prematurely = True
 if not pr__CStand_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"C standard\" (expected str)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"C standard\" (expected str)")
     should_exit_prematurely = True
 if not pr__libraries_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"libraries\" (expected list)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"libraries\" (expected list)")
     should_exit_prematurely = True
 if not pr__libraries_sub_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for one or more items in \"libraries\" \
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"libraries\" \
     (expected list pr__angelPcof str)")
     should_exit_prematurely = True
 if not pr__warnings_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"warnings\" (expected list)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"warnings\" (expected list)")
     should_exit_prematurely = True
 if not pr__warnings_sub_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for one or more items in \"warnings\" \
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"warnings\" \
     (expected list of str)")
     should_exit_prematurely = True
 if not pr__debug_level_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"debug level\" (expected int)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"debug level\" (expected int)")
     should_exit_prematurely = True
 if not pr__debug_flags_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"debug flags\" (expected list)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"debug flags\" (expected list)")
     should_exit_prematurely = True
 if not pr__debug_flags_sub_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for one or more items in \"debug flags\" \
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"debug flags\" \
     (expected list of str)")
     should_exit_prematurely = True
 if not pr__opt_lvl_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"optimization level\" (expected str)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"optimization level\" (expected str)")
     should_exit_prematurely = True
 if not pr__add_flags_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for \"additional flags\" (expected list)")
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"additional flags\" (expected list)")
     should_exit_prematurely = True
 if not pr__add_flags_sub_t:
-    print(f"AngelBD ! project.json -> INCORRECT TYPE for one or more items in \"additional flags\" \
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"additional flags\" \
+    (expected list of str)")
+    should_exit_prematurely = True
+if not pr__excludes_t:
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"excludes\" (expected list)")
+    should_exit_prematurely = True
+if not pr__add_flags_sub_t:
+    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"excludes\" \
     (expected list of str)")
     should_exit_prematurely = True
 
@@ -412,12 +457,12 @@ contains_all = contains_src  and contains_headers
 
 if not contains_libs:
 	print("AngelBD : Missing libraries/ folder")
-	print("           However this is optional")
-	print("           (angel-bd --help for info)")
+	print("          However this is optional")
+	print("          (angel-bd --help for info)")
 if not contains_libheads:
 	print("AngelBD : Missing library_headers/ folder")
-	print("           However this is optional")
-	print("           (angel-bd --help for info)")
+	print("          However this is optional")
+	print("          (angel-bd --help for info)")
 	
 if not contains_all:
 	print("AngelBD ! Build Failed")
@@ -430,9 +475,9 @@ if not contains_all:
 	sys.exit()
 else:
 	print("AngelBD : src/, ")
-	print("           headers/, ")
-	print("           libraries/ and ")
-	print("           library_headers/ folders found!")
+	print("          headers/, ")
+	print("          libraries/ and ")
+	print("          library_headers/ folders found!")
 
 
 #
@@ -447,9 +492,9 @@ headers_folderPath = os.path.join(project_path, "headers")
 lib_folderPath = os.path.join(project_path, "libraries")
 libhead_folderPath = os.path.join(project_path, "library_headers")
 
-src_files = get_all_file_paths(src_folderPath)
-header_files = get_all_file_paths(headers_folderPath)
-libhead_files = get_all_file_paths(libhead_folderPath)
+src_files = get_all_file_paths(src_folderPath, project_settings["excludes"])
+header_files = get_all_file_paths(headers_folderPath, project_settings["excludes"])
+libhead_files = get_all_file_paths(libhead_folderPath, project_settings["excludes"])
 
 og_files = src_files + header_files + libhead_files
 
