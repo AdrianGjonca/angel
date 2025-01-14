@@ -101,6 +101,18 @@ import shutil
 import subprocess
 import json
 
+class Color:
+	RESET = "\033[0m"
+	BOLD = "\033[1m"
+	UNDERLINE = "\033[4m"
+	RED = "\033[31m"
+	GREEN = "\033[32m"
+	YELLOW = "\033[33m"
+	BLUE = "\033[34m"
+	MAGENTA = "\033[35m"
+	CYAN = "\033[36m"
+	WHITE = "\033[37m"
+
 ################################################
 ##
 ##
@@ -170,6 +182,11 @@ for s in sys.argv:
 	if s.startswith("--ID"):
 		cfg_id = "__" + s[4:]
 
+verbose = False
+
+if ("-v" in sys.argv) or ("--verbose" in sys.argv):
+	verbose = True
+
 if ("--json" in sys.argv):
 	print(project_json_content)
 	sys.exit()
@@ -182,6 +199,15 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("")
 	print("Syntax:")
 	print("         angel-bd [project-path]")
+	print("  (or)   angel-bd [project-path] ...atributes")
+	print("")
+	print("Attributes:")
+	print("         -v or --verbose             => Adds additional messages to output")
+	print("         -h or --help                => Prints the help screen and nothing else (this)")
+	print("         -ID[cfg_id] or --ID[cfg_id] => Changes config file:")
+	print("                                        from 'project.json' to 'project[cfg_id].json'")
+	print("         --json                      => Outputs the default project.json and nothing else")
+	print("         --json-stripped             => Like --json but removes comments (unrecomended)")
 	print("")
 	print("Required Project Layout:")
 	print("         / (your project-path)")
@@ -199,7 +225,7 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 	print("         |     |")
 	print("         |     conatins any not-os-installed Static or Shared libraries")
 	print("         |     (the latter is unrecomended as Shared libraries still")
-	print("         |      need cfg_idto be installed on the os level inorder to even")
+	print("         |      need to be installed on the os level inorder to even")
 	print("         |      execute the program on your machine)")
 	print("         | ")
 	print("         |__library_headers/  (optional)")
@@ -245,11 +271,11 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
 #Check if project_path is a valid directory
 #
 if os.path.isdir(project_path):
-	print(f"AngelBD : Project-Directory found |{project_path}|")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : Project-Directory found |{project_path}|")
 	#Rest carried on after the if statement
 else:
-	print( "AngelBD ! Directory not found")
-	print(f"          Check path given |{project_path}|")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Directory not found")
+	print(f"          Check path given |{project_path}|{Color.RESET}")
 	sys.exit()
 
 ###
@@ -262,13 +288,13 @@ project_cfg_name = f"project{cfg_id}.json"
 project_json_path   = os.path.join(project_path, project_cfg_name)
 project_json_exists = os.path.isfile(project_json_path)
 if project_json_exists:
-	print(f"AngelBD : Project Settings found ({project_cfg_name})")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : Project Settings found ({project_cfg_name})")
 elif project_cfg_name != "":
-	print(f"AngelBD ! Compilation failed as ")
-	print(f"          Project Settings ({project_cfg_name}) not-found (and -ID was used)")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Compilation failed as ")
+	print(f"          Project Settings ({project_cfg_name}) not-found (and -ID was used){Color.RESET}")
 	sys.exit()
 else:
-	print(f"AngelBD : Project Settings ({project_cfg_name}) not-found (using default options)")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : Project Settings ({project_cfg_name}) not-found (using default options)")
 
 project_settings = dict()
 
@@ -276,8 +302,8 @@ if not project_json_exists:
 	project_settings = json.loads(\
 		remove_json_comments(project_json_content))
 else:
-    with open(project_json_path, 'r') as file:
-    	project_settings = json.loads(remove_json_comments(file.read()))
+	with open(project_json_path, 'r') as file:
+		project_settings = json.loads(remove_json_comments(file.read()))
 
 #
 # check if all properties are defined
@@ -297,42 +323,66 @@ pr__excludes     = "excludes" in project_settings
 
 should_exit_prematurely = False
 if not pr__angelPc:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"use angel-pc\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"use angel-pc\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__ExecName:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"executable name\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"executable name\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__ExecNameW:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"executable name (windows)\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"executable name (windows)\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__CStand:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"C standard\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"C standard\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__libraries:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"libraries\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"libraries\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__warnings:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"warnings\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"warnings\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__debug_level:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"debug level\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"debug level\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__debug_flags:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"debug flags\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"debug flags\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__opt_lvl:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"optimization level\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"optimization level\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__add_flags:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"additional flags\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"additional flags\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 if not pr__excludes:
-	print(f"AngelBD ! project{cfg_id}.json -> MISSING PROPERTY \"excludes\"")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> MISSING PROPERTY \"excludes\"\
+	{Color.RESET}")
 	should_exit_prematurely = True
 
 if should_exit_prematurely:
-	print(f"AngelBD ! Compilation failed as properties are missing from project{cfg_id}.json")
-	print( "          Use 'angel-bd --json' to see an example project.json file")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	Compilation failed as properties are missing from project{cfg_id}.json")
+	print(f"          Use 'angel-bd --json' to see an example project.json file\
+	{Color.RESET}")
 	sys.exit()
 
 #
@@ -373,62 +423,96 @@ if pr__excludes_t:
 		pr__excludes_sub_t = pr__excludes_sub_t and type(item) is str
 
 if not pr__angelPc_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"use angel-pc\" (expected bool)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"use angel-pc\" (expected bool)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__ExecName_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"executable name\" (expected str)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"executable name\" (expected str)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__ExecNameW_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"executable name (windows)\" (expected str)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"executable name (windows)\" (expected str)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__CStand_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"C standard\" (expected str)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"C standard\" (expected str)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__libraries_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"libraries\" (expected list)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"libraries\" (expected list)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__libraries_sub_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"libraries\" \
-    (expected list pr__angelPcof str)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"libraries\" \
+	(expected list of str)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__warnings_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"warnings\" (expected list)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"warnings\" (expected list)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__warnings_sub_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"warnings\" \
-    (expected list of str)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"warnings\" \
+	(expected list of str)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__debug_level_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"debug level\" (expected int)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"debug level\" (expected int)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__debug_flags_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"debug flags\" (expected list)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"debug flags\" (expected list)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__debug_flags_sub_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"debug flags\" \
-    (expected list of str)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"debug flags\" \
+	(expected list of str)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__opt_lvl_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"optimization level\" (expected str)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"optimization level\" (expected str)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__add_flags_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"additional flags\" (expected list)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"additional flags\" (expected list)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__add_flags_sub_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"additional flags\" \
-    (expected list of str)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"additional flags\" \
+	(expected list of str)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__excludes_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for \"excludes\" (expected list)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for \"excludes\" (expected list)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 if not pr__add_flags_sub_t:
-    print(f"AngelBD ! project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"excludes\" \
-    (expected list of str)")
-    should_exit_prematurely = True
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"excludes\" \
+	(expected list of str)\
+	{Color.RESET}")
+	should_exit_prematurely = True
 
 if should_exit_prematurely:
-	print(f"AngelBD ! Compilation failed as properties are of wrong types in project.json")
-	print( "          Use 'angel-bd --json' to see an example project.json file")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
+	Compilation failed as properties are of wrong types in project.json")
+	print(f"          Use 'angel-bd --json' to see an example project.json file\
+	{Color.RESET}")
 	sys.exit()
 
 ###
@@ -455,29 +539,29 @@ contains_libheads = \
 
 contains_all = contains_src  and contains_headers
 
-if not contains_libs:
-	print("AngelBD : Missing libraries/ folder")
-	print("          However this is optional")
-	print("          (angel-bd --help for info)")
-if not contains_libheads:
-	print("AngelBD : Missing library_headers/ folder")
-	print("          However this is optional")
-	print("          (angel-bd --help for info)")
+if not contains_libs and verbose:
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : Missing libraries/ folder")
+	print(                          "          However this is optional")
+	print(                          "          (angel-bd --help for info)")
+if not contains_libheads and verbose:
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : Missing library_headers/ folder")
+	print(                          "          However this is optional")
+	print(                          "          (angel-bd --help for info)")
 	
 if not contains_all:
-	print("AngelBD ! Build Failed")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Build Failed")
 	if not contains_src:
-		print("           Missing src/ folder")
-		print("           (angel-bd --help for info)")
+		print(                 "           Missing src/ folder")
+		print(                f"           (angel-bd --help for info){Color.RESET}")
 	if not contains_headers:
-		print("           Missing headers/ folder")
-		print("           (angel-bd --help for info)")
+		print(                 "           Missing headers/ folder")
+		print(                f"           (angel-bd --help for info){Color.RESET}")
 	sys.exit()
-else:
-	print("AngelBD : src/, ")
-	print("          headers/, ")
-	print("          libraries/ and ")
-	print("          library_headers/ folders found!")
+elif verbose:
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : src/, ")
+	print(                          "          headers/, ")
+	print(                          "          libraries/ and ")
+	print(                          "          library_headers/ folders found!")
 
 
 #
@@ -540,9 +624,11 @@ tomake_folders_src = [os.path.dirname(src_file) \
 #
 if os.path.exists(generated_folder):
 	shutil.rmtree(generated_folder)
-	print("AngelBD : generated/ directory structure cleaned")
+	if verbose:
+		print(f"{Color.CYAN}AngelBD{Color.RESET} : generated/ directory structure cleaned")
 else:
-	print("AngelBD : generated/ directory allready clean")
+	if verbose:
+		print(f"{Color.CYAN}AngelBD{Color.RESET} : generated/ directory allready clean")
 
 
 #
@@ -550,20 +636,21 @@ else:
 #
 for a_folder in tomake_folders_src:
 	os.makedirs(a_folder, exist_ok=True)
-print("AngelBD : generated/ directory structure made")
+if verbose:
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : generated/ directory structure made")
 
 
 #
 #Checks if angel-pc is installed
 #
 if project_settings["use angel-pc"] and not shutil.which("angel-pc"):
-    print("AngelBD ! Build Failed")
-    print("           The Angel PreCompiler is not installed on your system")
-    print("           (or is not setup in you PATH environment variable)")
-    print("           Please reinstall Angel Development Tools and try again!")
+    print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Build Failed")
+    print(                         f"          The Angel PreCompiler is not installed on your system")
+    print(                         f"          (or is not setup in you PATH environment variable)")
+    print(                         f"          Please reinstall Angel Development Tools and try again!{Color.RESET}")
     sys.exit()
 if not project_settings["use angel-pc"]:
-    print("AngelBD : project.json configured to not use AngelPC")
+    print(f"{Color.CYAN}AngelBD{Color.RESET} : project.json configured to not use AngelPC")
 
 
 #
@@ -581,19 +668,22 @@ if project_settings["use angel-pc"] == True:
 	#print()
 	commands_to_execute = [ "angel-pc " + og_file + " -o " + og_to_gen[og_file] \
 							for og_file in og_files]
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : Precompiling with Angel PreCompiler")
 	i = 0
 	for command in commands_to_execute:
 		result = subprocess.run(command, shell=True, capture_output=True, text=True)
 		pc_out = result.stdout
 		print(pc_out, end="")
-		print("AngelBD : (----Precompiled " + og_files[i] + " to " + og_to_gen[og_files[i]] + ")")
+		if verbose:
+			print(f"{Color.CYAN}AngelBD{Color.RESET} : (----Precompiled " + og_files[i] + " to " + og_to_gen[og_files[i]] + ")")
 		i += 1
 	#print()
 else:
-	print("AngelBD : Precompilation skipped")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : Precompilation skipped")
 	for og_file in og_files:
 		shutil.copyfile(og_file, og_to_gen[og_file])
-		print("----Copied " + og_file + " to " + og_to_gen[og_file])
+		if verbose:
+			print("----Copied " + og_file + " to " + og_to_gen[og_file])
 
 
 #
@@ -611,21 +701,10 @@ else:
 #Checks if gcc is installed
 #
 if not shutil.which("gcc"):
-    print("AngelBD ! Build Failed")
-    print("          GCC is not installed or installed incorrectly")
-    print("          Please (re)install GCC!")
+    print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Build Failed")
+    print(                         f"          GCC is not installed or installed incorrectly")
+    print(                         f"          Please (re)install GCC!{Color.RESET}")
     sys.exit()
-
-class bcolors: #I have no clue why i put this here (INVESTIGATE)
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
 #
 #Create the gcc command we shall execute
@@ -671,14 +750,15 @@ for the_src_file in generated_src_files:
 #Remove old executable
 #
 if os.path.exists(executable_file):
-	print("AngelBD : Deleting old executable file")
+	if verbose:
+		print(f"{Color.CYAN}AngelBD{Color.RESET} : Deleting old executable file")
 	os.remove(executable_file)
 
 #
 #Compile
 #
 
-print("AngelBD : Calling GCC to compile")
+print(f"{Color.CYAN}AngelBD{Color.RESET} : Calling GCC to compile")
 result = subprocess.run(compile_command, shell=True, capture_output=True, text=True)
 
 print("")
@@ -687,7 +767,7 @@ print("GCC Output :\n", result.stdout)
 
 print("")
 
-print("GCC Error  :\n", result.stderr)
+print(f"GCC Error  :\n{Color.RED}", result.stderr + f"{Color.RESET}")
 
 #
 #Summary
@@ -695,9 +775,9 @@ print("GCC Error  :\n", result.stderr)
 
 print("")
 if os.path.exists(executable_file):
-	print("AngelBD : Compilation appears to have been a SUCCESS!")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : Compilation appears to have been a SUCCESS!")
 else:
-	print("AngelBD : Compilation appears to have FAILED!")
+	print(f"{Color.CYAN}AngelBD{Color.RESET} : Compilation appears to have FAILED!")
 
 
 
