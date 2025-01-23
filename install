@@ -9,7 +9,7 @@ rm -f /bin/angel-pc
 rm -f /bin/angel-bd
 
 #Main install section
-mkdir "/usr/local/bin/"
+mkdir -p "/usr/local/bin/"
 
 echo "    /usr/local/bin/angel-pc"
 cp "$SCRIPT_DIR""/Angel Precomp/angel-pc" "/usr/local/bin/angel-pc"

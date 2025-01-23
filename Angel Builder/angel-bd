@@ -1,96 +1,97 @@
 #!/usr/bin/env python3
 
+#%% Preamble
 ######DEFAULT JSON######
 project_json_content = """
 {
-	/*
-	 * Angel Precompiler Settings
-	 */
-	"use angel-pc"		: true,
-	
-	/*
-	 * Executable name
-	 *
-	 * NOTE This flag applies to the output file even when you are not 
-	 *      building an executable (e.g. library)
-	 */
-	"executable name"			: "executable",		//For *NIX systems, Linux/MacOS for example
-	"executable name (windows)"	: "executable.exe",	//For Windows
-	
-	/*
-	 * C standard to use
-	 * e.g. gnu23 or c11 ect
-	 */
-	"C standard"		: "gnu17",
-	
-	/*
-	 * Libraries to link to in your project
-	 * Includes all libraries, OS installed and not, static or shared.
-	 *
-	 * NOTE Do not include the '-l' prefix as angel-bd adds it automatically
-	 *      e.g.   c -> -lc, sdl2 -> -lsdl2
-	 *
-	 * NOTE Still includes all standard libraries of GCC
-	 */
-	"libraries"			: [],
-	
-	/*
-	 * Warning flags to be used by gcc
-	 *
-	 * NOTE Similar to the libraries, the '-W' flag is prepended automatically
-	 *      e.g.   all -> -Wall, extra -> -Wextra
-	 */
-	"warnings"			: ["all"],
-	
-	/*
-	 * Debug flags (for including debug info)
-	 * 
-	 * NOTE "debug level":0 is the default (no debugging info)
-	 *      "debug level":2 is the standard when using the -g flag on GCC.
-	 *      "debug level":3 is the highest you can go
-	 *      (If you dont know about the -g flag and are learning c
-	 *       I highly recommend you watch something on GDB and
-	 *       debugging C code :D )
-	 *
-	 * NOTE The "debug flags" is to be used by the true GDB pros.
-	 *      Like with the other properties, angel-bd automatically prepends
-	 *      the (in this case) 'g' flag
-	 *      e.g.  "dwarf-2" -> "-gdwarf-2"
-	 */
-	"debug level"		: 0,
-	"debug flags"		: [],
-	
-	/*
-	 * Optimization level
-	 * "0", "3", "s", "fast", etc
-	 * 
-	 * DO YOUR RESEARCH
-	 *
-	 * GCC default is 0 - none
-	 */
-	 "optimization level"	: "0",
-	 
-	 /*
-	  * Additional flags
-	  * 
-	  * Needed for generating libraries!
-	  * AND also for use by the REAL c pros.
-	  *
-	  * NOTE the flags below only have the "-" appended to them
-	  * unlike before
-	  * e.g.  "fsanitize=leak" -> "-fsanitize=leak"
-	  *       "shared"         -> "-shared"
-	  */
-	  "additional flags"	: [],
+    /*
+     * Angel Precompiler Settings
+     */
+    "use angel-pc" : true,
+    
+    /*
+     * Executable name
+     *
+     * NOTE This flag applies to the output file even when you are not 
+     *      building an executable (e.g. library)
+     */
+    "executable name" : "executable",        //For *NIX systems, Linux/MacOS for example
+    "executable name (windows)" : "executable.exe",    //For Windows
+    
+    /*
+     * C standard to use
+     * e.g. gnu23 or c11 ect
+     */
+    "C standard" : "gnu17",
+    
+    /*
+     * Libraries to link to in your project
+     * Includes all libraries, OS installed and not, static or shared.
+     *
+     * NOTE Do not include the '-l' prefix as angel-bd adds it automatically
+     *      e.g.   c -> -lc, sdl2 -> -lsdl2
+     *
+     * NOTE Still includes all standard libraries of GCC
+     */
+    "libraries" : [],
+    
+    /*
+     * Warning flags to be used by gcc
+     *
+     * NOTE Similar to the libraries, the '-W' flag is prepended automatically
+     *      e.g.   all -> -Wall, extra -> -Wextra
+     */
+    "warnings" : ["all"],
+    
+    /*
+     * Debug flags (for including debug info)
+     * 
+     * NOTE "debug level":0 is the default (no debugging info)
+     *      "debug level":2 is the standard when using the -g flag on GCC.
+     *      "debug level":3 is the highest you can go
+     *      (If you dont know about the -g flag and are learning c
+     *       I highly recommend you watch something on GDB and
+     *       debugging C code :D )
+     *
+     * NOTE The "debug flags" is to be used by the true GDB pros.
+     *      Like with the other properties, angel-bd automatically prepends
+     *      the (in this case) 'g' flag
+     *      e.g.  "dwarf-2" -> "-gdwarf-2"
+     */
+    "debug level" : 0,
+    "debug flags" : [],
+    
+    /*
+     * Optimization level
+     * "0", "3", "s", "fast", etc
+     * 
+     * DO YOUR RESEARCH
+     *
+     * GCC default is 0 - none
+     */
+     "optimization level" : "0",
+     
+     /*
+      * Additional flags
+      * 
+      * Needed for generating libraries!
+      * AND also for use by the REAL c pros.
+      *
+      * NOTE the flags below only have the "-" appended to them
+      * unlike before
+      * e.g.  "fsanitize=leak" -> "-fsanitize=leak"
+      *       "shared"         -> "-shared"
+      */
+      "additional flags" : [],
 
-	/*
-	 * Excludes
-	 * 
-	 * All the file names to exclude
-	 *
-	 * Example:    "excludes": ["test.c", "testlib.c", "testlib.h"]
-	 */
-	 "excludes"	: []
+    /*
+     * Excludes
+     * 
+     * All the file names to exclude
+     *
+     * Example: "excludes": ["test.c", "testlib.c", "testlib.h"]
+     */
+     "excludes" : []
 }
 """
 
@@ -102,65 +103,137 @@ import subprocess
 import json
 
 class Color:
-	RESET = "\033[0m"
-	BOLD = "\033[1m"
-	UNDERLINE = "\033[4m"
-	RED = "\033[31m"
-	GREEN = "\033[32m"
-	YELLOW = "\033[33m"
-	BLUE = "\033[34m"
-	MAGENTA = "\033[35m"
-	CYAN = "\033[36m"
-	WHITE = "\033[37m"
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    MAGENTA = "\033[35m"
+    CYAN = "\033[36m"
+    WHITE = "\033[37m"
 
-################################################
-##
-##
-## Functions
-##
-##
-################################################
+#%% Console Functions
+PROGRAM_NAME = "AngelBD"
+PROGRAM_CLCD = Color.CYAN
+
+def vlen(s: str) -> int:
+    clean_string = s.replace("\033[0m", "")\
+                    .replace("\033[1m", "")\
+                    .replace("\033[4m", "")\
+                    .replace("\033[31m", "")\
+                    .replace("\033[32m", "")\
+                    .replace("\033[33m", "")\
+                    .replace("\033[34m", "")\
+                    .replace("\033[35m", "")\
+                    .replace("\033[36m", "")\
+                    .replace("\033[37m", "")
+    return len(clean_string)
+
+def __split_string(s: str, n: int) -> list[str]:
+    chunks = []
+    buffer = ""
+    in_escape = False
+    for a in s:
+        if in_escape:
+            buffer = buffer + a
+            if a == "m":
+                in_escape = False
+        else:
+            buffer = buffer + a
+            if a == "\033" or a == "\x1b":
+                in_escape = True
+            if vlen(buffer) > n and not in_escape:
+                chunks.append(buffer)
+                buffer = ""
+    if buffer != "":
+        chunks.append(buffer)
+    return chunks
+
+def __print(text: str, seperator: str, name: str, clcd: str):
+    text_lines = text.split("\n")
+    
+    prefix = f"{clcd}{name}{Color.RESET} {seperator} "
+    offset = len(PROGRAM_NAME) + 3 #+3 for " : "
+    
+    cns_size = os.get_terminal_size()
+    cns_width = cns_size.columns
+    width = cns_width - offset - 1
+    
+    shortened_lines = []
+    for line in text_lines:
+        shortened_lines.extend(__split_string(line, width))
+    
+    if len(shortened_lines) == 0:
+        print(prefix)
+    elif len(shortened_lines) == 1:
+        print(prefix + shortened_lines[0])
+    else:
+        print(prefix + shortened_lines[0])
+        _prefix = " " * offset
+        for line in shortened_lines[1:]:
+            print(_prefix + line)
+
+def _print(text: str, seperator: str):
+    __print(text, seperator, PROGRAM_NAME, PROGRAM_CLCD)
+
+def printG(text: str):
+    _print(text, ":")
+
+def printB(text: str):
+    _print(f"{Color.RED}{text}{Color.RESET}", f"{Color.RED}!{Color.RESET}")
+
+def print_GCC_G(text: str):
+    __print(text, ":", "GCC", Color.GREEN)
+
+def print_GCC_B(text: str):
+    __print(f"{Color.RED}{text}{Color.RESET}", f"{Color.RED}!{Color.RESET}", "GCC", Color.GREEN)
+
+#%% Path/File Processing Functions
 OPTION_REMOVECOMMENTS = True
 OPTION_NEATIFY = False
 def remove_json_comments(json_with_comments: str) -> str:
-	if not OPTION_REMOVECOMMENTS:
-		return json_with_comments
-	
-	# Remove single-line comments (//...)
-	json_without_comments = re.sub(r'//.*', '', json_with_comments)
-	# Remove multi-line comments (/* ... */)
-	json_without_comments = re.sub(r'/\*.*?\*/', '', json_without_comments, flags=re.DOTALL)
-	
-	if OPTION_NEATIFY:
-		return json_without_comments \
-		       .strip() \
-		       .replace("\t\t", " ")   \
-		       .replace("\t", " ")
-	else:
-		return json_without_comments \
-		       .strip()
+    if not OPTION_REMOVECOMMENTS:
+        return json_with_comments
+    
+    # Remove single-line comments (//...)
+    json_without_comments = re.sub(r'//.*', '', json_with_comments)
+    # Remove multi-line comments (/* ... */)
+    json_without_comments = re.sub(r'/\*.*?\*/', '', json_without_comments, flags=re.DOTALL)
+    
+    if OPTION_NEATIFY:
+        return json_without_comments \
+               .strip() \
+               .replace("\t\t", " ")   \
+               .replace("\t", " ")
+    else:
+        return json_without_comments \
+               .strip()
 
 def get_directories(path):
-	#Chat GPT wrote this one line monstrosity
-	return [os.path.join(path, entry) \
-		for entry in os.listdir(path) \
-		 if os.path.isdir(os.path.join(path, entry))]
+    #Chat GPT wrote this one line monstrosity
+    return [os.path.join(path, entry) \
+        for entry in os.listdir(path) \
+         if os.path.isdir(os.path.join(path, entry))]
 
 def get_directories_nameonly(path):
-	#Chat GPT wrote this one line monstrosity
-	return [entry for entry in os.listdir(path) \
-		if os.path.isdir(os.path.join(path, entry))]
+    #Chat GPT wrote this one line monstrosity
+    return [entry for entry in os.listdir(path) \
+        if os.path.isdir(os.path.join(path, entry))]
 
 def get_all_file_paths(directory, excludes):
-	#Credit to big man Chat-GPT (I know f*ckall python :( )
-	file_paths = []
-	for root, _, files in os.walk(directory):
-		for file in files:
-			if (not file.endswith(".swp")) and (not file in excludes):
-				file_paths.append(os.path.join(root, file))
-	return file_paths
+    #Credit to big man Chat-GPT (I know f*ckall python :( )
+    file_paths = []
+    for root, _, files in os.walk(directory):
+        for file in files:
+            if (not file.endswith(".swp")) and (not file in excludes):
+                file_paths.append(os.path.join(root, file))
+    return file_paths
 
 
+
+#%% Beginnings
 ################################################
 ##
 ##
@@ -168,6 +241,7 @@ def get_all_file_paths(directory, excludes):
 ##
 ##
 ################################################
+
 if len(sys.argv) < 2:
     print("Angel BuilDer cannot work if you don't give me a project root directory")
     sys.exit()
@@ -177,620 +251,487 @@ project_path = sys.argv[1]
 cfg_id = ""
 
 for s in sys.argv:
-	if s.startswith("-ID"):
-		cfg_id = "__" + s[3:]
-	if s.startswith("--ID"):
-		cfg_id = "__" + s[4:]
+    if s.startswith("-ID"):
+        cfg_id = "__" + s[3:]
+    if s.startswith("--ID"):
+        cfg_id = "__" + s[4:]
 
 verbose = False
 
 if ("-v" in sys.argv) or ("--verbose" in sys.argv):
-	verbose = True
-
+    verbose = True
 if ("--json" in sys.argv):
-	print(project_json_content)
-	sys.exit()
+    print(project_json_content)
+    sys.exit()
 if ("--json-stripped" in sys.argv):
-	print(remove_json_comments(project_json_content))
-	sys.exit()
+    print(remove_json_comments(project_json_content))
+    sys.exit()
 if ("-h" in sys.argv) or ("--help" in sys.argv):
-	print("This is the Angel BuilDer command")
-	print("Use this to build your Angel-DT projects")
-	print("")
-	print("Syntax:")
-	print("         angel-bd [project-path]")
-	print("  (or)   angel-bd [project-path] ...atributes")
-	print("")
-	print("Attributes:")
-	print("         -v or --verbose             => Adds additional messages to output")
-	print("         -h or --help                => Prints the help screen and nothing else (this)")
-	print("         -ID[cfg_id] or --ID[cfg_id] => Changes config file:")
-	print("                                        from 'project.json' to 'project[cfg_id].json'")
-	print("         --json                      => Outputs the default project.json and nothing else")
-	print("         --json-stripped             => Like --json but removes comments (unrecomended)")
-	print("")
-	print("Required Project Layout:")
-	print("         / (your project-path)")
-	print("         |")
-	print("         |")
-	print("         |__src/")
-	print("         |     |")
-	print("         |     source files (*.c) [can include those in nested subdirs]")
-	print("         | ")
-	print("         |__headers/ ")
-	print("         |     |")
-	print("         |     header files (*.h) [can include those in nested subdirs]")
-	print("         | ")
-	print("         |__libraries/ (optional)")
-	print("         |     |")
-	print("         |     conatins any not-os-installed Static or Shared libraries")
-	print("         |     (the latter is unrecomended as Shared libraries still")
-	print("         |      need to be installed on the os level inorder to even")
-	print("         |      execute the program on your machine)")
-	print("         | ")
-	print("         |__library_headers/  (optional)")
-	print("         |     |")
-	print("         |     conatins any headers pertaining to the not-os-installed")
-	print("         |     Static or Shared libraries.")
-	print("         | ")
-	print("         |__project.json (optional) -> compilation settings (e.g.")
-	print("         |                             libraries, compiler flags etc)")
-	print("         |")
-	print("         |__project__[cfg-id].json (optional) -> Alternate version of project.json")
-	print("         :                                       Used for alternate compilation ")
-	print("         :                                       configurations.")
-	print("         :                                       Used with the -ID[cfg-id] flag.")
-	print("         :                                       Can be more than one alternate config")
-	print("         : ")
-	print("         :..generated/ ")
-	print("         :     :")
-	print("         :     :..src/")
-	print("         :     :     :")
-	print("         :     :     Post-precompilation source files (*.c) [nested]")
-	print("         :     : ")
-	print("         :     :..headers/")
-	print("         :           :")
-	print("         :           Post-precompilation header files (*.h) [nested]")
-	print("         : ")   
-	print("         :..executable -> the executable file generated by compilation")
-	print("")
-	print("         (dotted lines show the files and directories generated at build)")
-	print("         (regular lines show the files and directories you write yourself)")
-	print("")
-	sys.exit()
-
-################################################
-##
-## 
-## Main program
-## 
-##
-################################################
-
-#
-#Check if project_path is a valid directory
-#
-if os.path.isdir(project_path):
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : Project-Directory found |{project_path}|")
-	#Rest carried on after the if statement
-else:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Directory not found")
-	print(f"          Check path given |{project_path}|{Color.RESET}")
-	sys.exit()
-
-###
-#
-# project.json section
-#
-###
-
-project_cfg_name = f"project{cfg_id}.json"
-project_json_path   = os.path.join(project_path, project_cfg_name)
-project_json_exists = os.path.isfile(project_json_path)
-if project_json_exists:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : Project Settings found ({project_cfg_name})")
-elif project_cfg_name != "":
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Compilation failed as ")
-	print(f"          Project Settings ({project_cfg_name}) not-found (and -ID was used){Color.RESET}")
-	sys.exit()
-else:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : Project Settings ({project_cfg_name}) not-found (using default options)")
-
-project_settings = dict()
-
-if not project_json_exists:
-	project_settings = json.loads(\
-		remove_json_comments(project_json_content))
-else:
-	with open(project_json_path, 'r') as file:
-		project_settings = json.loads(remove_json_comments(file.read()))
-
-#
-# check if all properties are defined
-#
-
-pr__angelPc      = "use angel-pc" in project_settings
-pr__ExecName     = "executable name" in project_settings
-pr__ExecNameW    = "executable name (windows)" in project_settings
-pr__CStand       = "C standard" in project_settings
-pr__libraries    = "libraries" in project_settings
-pr__warnings     = "warnings" in project_settings
-pr__debug_level  = "debug level" in project_settings
-pr__debug_flags  = "debug flags" in project_settings
-pr__opt_lvl      = "optimization level" in project_settings
-pr__add_flags    = "additional flags" in project_settings
-pr__excludes     = "excludes" in project_settings
-
-should_exit_prematurely = False
-if not pr__angelPc:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"use angel-pc\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__ExecName:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"executable name\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__ExecNameW:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"executable name (windows)\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__CStand:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"C standard\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__libraries:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"libraries\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__warnings:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"warnings\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__debug_level:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"debug level\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__debug_flags:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"debug flags\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__opt_lvl:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"optimization level\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__add_flags:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"additional flags\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__excludes:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> MISSING PROPERTY \"excludes\"\
-	{Color.RESET}")
-	should_exit_prematurely = True
-
-if should_exit_prematurely:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	Compilation failed as properties are missing from project{cfg_id}.json")
-	print(f"          Use 'angel-bd --json' to see an example project.json file\
-	{Color.RESET}")
-	sys.exit()
-
-#
-#Typechecking
-#
-should_exit_prematurely = False # redundant but for neatness
-
-pr__angelPc_t      = type(project_settings["use angel-pc"]) is bool
-pr__ExecName_t     = type(project_settings["executable name"]) is str
-pr__ExecNameW_t    = type(project_settings["executable name (windows)"]) is str
-pr__CStand_t       = type(project_settings["C standard"]) is str
-pr__libraries_t    = type(project_settings["libraries"]) is list
-pr__libraries_sub_t = True
-if pr__libraries_t:
-	for item in project_settings["libraries"]:
-		pr__libraries_sub_t = pr__libraries_sub_t and type(item) is str
-pr__warnings_t     = type(project_settings["warnings"]) is list
-pr__warnings_sub_t = True
-if pr__warnings_t:
-	for item in project_settings["warnings"]:
-		pr__warnings_sub_t = pr__warnings_sub_t and type(item) is str
-pr__debug_level_t  = type(project_settings["debug level"]) is int
-pr__debug_flags_t  = type(project_settings["debug flags"]) is list
-pr__debug_flags_sub_t = True
-if pr__debug_flags_t:
-	for item in project_settings["debug flags"]:
-		pr__debug_flags_sub_t = pr__debug_flags_sub_t and type(item) is str
-pr__opt_lvl_t      = type(project_settings["optimization level"]) is str
-pr__add_flags_t    = type(project_settings["additional flags"]) is list
-pr__add_flags_sub_t = True
-if pr__add_flags_t:
-	for item in project_settings["additional flags"]:
-		pr__add_flags_sub_t = pr__add_flags_sub_t and type(item) is str
-pr__excludes_t    = type(project_settings["excludes"]) is list
-pr__excludes_sub_t = True
-if pr__excludes_t:
-	for item in project_settings["additional flags"]:
-		pr__excludes_sub_t = pr__excludes_sub_t and type(item) is str
-
-if not pr__angelPc_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"use angel-pc\" (expected bool)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__ExecName_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"executable name\" (expected str)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__ExecNameW_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"executable name (windows)\" (expected str)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__CStand_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"C standard\" (expected str)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__libraries_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"libraries\" (expected list)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__libraries_sub_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"libraries\" \
-	(expected list of str)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__warnings_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"warnings\" (expected list)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__warnings_sub_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"warnings\" \
-	(expected list of str)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__debug_level_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"debug level\" (expected int)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__debug_flags_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"debug flags\" (expected list)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__debug_flags_sub_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"debug flags\" \
-	(expected list of str)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__opt_lvl_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"optimization level\" (expected str)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__add_flags_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"additional flags\" (expected list)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__add_flags_sub_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"additional flags\" \
-	(expected list of str)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__excludes_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for \"excludes\" (expected list)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-if not pr__add_flags_sub_t:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"excludes\" \
-	(expected list of str)\
-	{Color.RESET}")
-	should_exit_prematurely = True
-
-if should_exit_prematurely:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}\
-	Compilation failed as properties are of wrong types in project.json")
-	print(f"          Use 'angel-bd --json' to see an example project.json file\
-	{Color.RESET}")
-	sys.exit()
-
-###
-#
-# main section
-#
-###
-
-#
-#Checks if project directories are set up correctly
-#
-pr_folders_nameonly = get_directories_nameonly(project_path) 
-contains_src = \
-	"src" in pr_folders_nameonly
- 
-contains_headers = \
-	"headers" in pr_folders_nameonly
-
-contains_libs = \
-	"libraries" in pr_folders_nameonly
-
-contains_libheads = \
-	"library_headers" in pr_folders_nameonly
-
-contains_all = contains_src  and contains_headers
-
-if not contains_libs and verbose:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : Missing libraries/ folder")
-	print(                          "          However this is optional")
-	print(                          "          (angel-bd --help for info)")
-if not contains_libheads and verbose:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : Missing library_headers/ folder")
-	print(                          "          However this is optional")
-	print(                          "          (angel-bd --help for info)")
-	
-if not contains_all:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Build Failed")
-	if not contains_src:
-		print(                 "           Missing src/ folder")
-		print(                f"           (angel-bd --help for info){Color.RESET}")
-	if not contains_headers:
-		print(                 "           Missing headers/ folder")
-		print(                f"           (angel-bd --help for info){Color.RESET}")
-	sys.exit()
-elif verbose:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : src/, ")
-	print(                          "          headers/, ")
-	print(                          "          libraries/ and ")
-	print(                          "          library_headers/ folders found!")
-
-
-#
-#Get a list of all src and header files
-#
-src_files = []
-header_files = []
-libheader_files = []
-
-src_folderPath = os.path.join(project_path, "src")
-headers_folderPath = os.path.join(project_path, "headers")
-lib_folderPath = os.path.join(project_path, "libraries")
-libhead_folderPath = os.path.join(project_path, "library_headers")
-
-src_files = get_all_file_paths(src_folderPath, project_settings["excludes"])
-header_files = get_all_file_paths(headers_folderPath, project_settings["excludes"])
-libhead_files = get_all_file_paths(libhead_folderPath, project_settings["excludes"])
-
-og_files = src_files + header_files + libhead_files
-
-rel_src_files = [os.path.relpath(src_file, src_folderPath) \
-                 for src_file in src_files]
-rel_header_files = [os.path.relpath(header_file, headers_folderPath) \
-                    for header_file in header_files]
-rel_libhead_files = [os.path.relpath(libhead_file, libhead_folderPath) \
-                    for libhead_file in libhead_files]
-rel_files = rel_src_files + rel_header_files + rel_libhead_files
-
-
-#
-#Create list of src and header generated files
-#
-generated_folder = os.path.join(project_path, "generated")
-generated_src_folder = os.path.join(generated_folder, "src")
-	#we are including library_headers and project headers in one generated-folder
-	#as behaviour is the same 
-generated_headers_folder = os.path.join(generated_folder, "headers")
-
-
-generated_src_files = [os.path.join(generated_src_folder, src_file) \
-					   for src_file in rel_src_files]
-generated_header_files = [os.path.join(generated_headers_folder, header_file) \
-					   for header_file in rel_header_files] \
-					   + [os.path.join(generated_headers_folder, libhead_file) \
-					   for libhead_file in rel_libhead_files]
-generated_files = generated_src_files + generated_header_files
-
-
-#
-#Create lists of folders to be made
-#
-tomake_folders_src = [os.path.dirname(src_file) \
-					  for src_file in generated_src_files] + \
-					 [os.path.dirname(header_file) \
-					  for header_file in generated_header_files]
-
-
-#
-#Cleans the generated/ folder
-#
-if os.path.exists(generated_folder):
-	shutil.rmtree(generated_folder)
-	if verbose:
-		print(f"{Color.CYAN}AngelBD{Color.RESET} : generated/ directory structure cleaned")
-else:
-	if verbose:
-		print(f"{Color.CYAN}AngelBD{Color.RESET} : generated/ directory allready clean")
-
-
-#
-#Creates said folders/directories
-#
-for a_folder in tomake_folders_src:
-	os.makedirs(a_folder, exist_ok=True)
-if verbose:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : generated/ directory structure made")
-
-
-#
-#Checks if angel-pc is installed
-#
-if project_settings["use angel-pc"] and not shutil.which("angel-pc"):
-    print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Build Failed")
-    print(                         f"          The Angel PreCompiler is not installed on your system")
-    print(                         f"          (or is not setup in you PATH environment variable)")
-    print(                         f"          Please reinstall Angel Development Tools and try again!{Color.RESET}")
-    sys.exit()
-if not project_settings["use angel-pc"]:
-    print(f"{Color.CYAN}AngelBD{Color.RESET} : project.json configured to not use AngelPC")
-
-
-#
-#Create a dictionary of source to output files
-#
-og_to_gen = dict()
-
-for i in range(0, len(generated_files)):
-	og_to_gen[og_files[i]] = generated_files[i]
-
-#
-#Precompiles the files
-#
-if project_settings["use angel-pc"] == True:
-	#print()
-	commands_to_execute = [ "angel-pc " + og_file + " -o " + og_to_gen[og_file] \
-							for og_file in og_files]
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : Precompiling with Angel PreCompiler")
-	i = 0
-	for command in commands_to_execute:
-		result = subprocess.run(command, shell=True, capture_output=True, text=True)
-		pc_out = result.stdout
-		print(pc_out, end="")
-		if verbose:
-			print(f"{Color.CYAN}AngelBD{Color.RESET} : (----Precompiled " + og_files[i] + " to " + og_to_gen[og_files[i]] + ")")
-		i += 1
-	#print()
-else:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : Precompilation skipped")
-	for og_file in og_files:
-		shutil.copyfile(og_file, og_to_gen[og_file])
-		if verbose:
-			print("----Copied " + og_file + " to " + og_to_gen[og_file])
-
-
-#
-#Create name for the executable
-#
-executable_file = ""
-
-if os.name == "nt":
-	executable_file = os.path.join(project_path, project_settings["executable name (windows)"])
-else:
-	executable_file = os.path.join(project_path, project_settings["executable name"])
-
-
-#
-#Checks if gcc is installed
-#
-if not shutil.which("gcc"):
-    print(f"{Color.CYAN}AngelBD{Color.RESET} ! {Color.RED}Build Failed")
-    print(                         f"          GCC is not installed or installed incorrectly")
-    print(                         f"          Please (re)install GCC!{Color.RESET}")
+    print("This is the Angel BuilDer command")
+    print("Use this to build your Angel-DT projects")
+    print("")
+    print("Syntax:")
+    print("         angel-bd [project-path]")
+    print("  (or)   angel-bd [project-path] ...atributes")
+    print("")
+    print("Attributes:")
+    print("         -v or --verbose             => Adds additional messages to output")
+    print("         -h or --help                => Prints the help screen and nothing else (this)")
+    print("         -ID[cfg_id] or --ID[cfg_id] => Changes config file:")
+    print("                                        from 'project.json' to 'project[cfg_id].json'")
+    print("         --json                      => Outputs the default project.json and nothing else")
+    print("         --json-stripped             => Like --json but removes comments (unrecomended)")
+    print("")
+    print("Required Project Layout:")
+    print("         / (your project-path)")
+    print("         |")
+    print("         |")
+    print("         |__src/")
+    print("         |     |")
+    print("         |     source files (*.c) [can include those in nested subdirs]")
+    print("         | ")
+    print("         |__headers/ ")
+    print("         |     |")
+    print("         |     header files (*.h) [can include those in nested subdirs]")
+    print("         | ")
+    print("         |__libraries/ (optional)")
+    print("         |     |")
+    print("         |     conatins any not-os-installed Static or Shared libraries")
+    print("         |     (the latter is unrecomended as Shared libraries still")
+    print("         |      need to be installed on the os level inorder to even")
+    print("         |      execute the program on your machine)")
+    print("         | ")
+    print("         |__library_headers/  (optional)")
+    print("         |     |")
+    print("         |     conatins any headers pertaining to the not-os-installed")
+    print("         |     Static or Shared libraries.")
+    print("         | ")
+    print("         |__project.json (optional) -> compilation settings (e.g.")
+    print("         |                             libraries, compiler flags etc)")
+    print("         |")
+    print("         |__project__[cfg-id].json (optional) -> Alternate version of project.json")
+    print("         :                                       Used for alternate compilation ")
+    print("         :                                       configurations.")
+    print("         :                                       Used with the -ID[cfg-id] flag.")
+    print("         :                                       Can be more than one alternate config")
+    print("         : ")
+    print("         :..generated/ ")
+    print("         :     :")
+    print("         :     :..src/")
+    print("         :     :     :")
+    print("         :     :     Post-precompilation source files (*.c) [nested]")
+    print("         :     : ")
+    print("         :     :..headers/")
+    print("         :           :")
+    print("         :           Post-precompilation header files (*.h) [nested]")
+    print("         : ")   
+    print("         :..executable -> the executable file generated by compilation")
+    print("")
+    print("         (dotted lines show the files and directories generated at build)")
+    print("         (regular lines show the files and directories you write yourself)")
+    print("")
     sys.exit()
 
-#
-#Create the gcc command we shall execute
-#
-compile_command = "gcc -I"
-compile_command += generated_headers_folder
-compile_command += " -L"
-compile_command += lib_folderPath
-compile_command += " -std="
-compile_command += project_settings["C standard"]
+#%% MAIN START
+def MAIN():
+#%% Main: check path exists
+    #
+    #Check if project_path is a valid directory
+    #
+    if os.path.isdir(project_path):
+        printG(f"Project-Directory found |{project_path}|")
+        #Rest carried on after the if statement
+    else:
+        printB(f"Directory not found\n"+
+               f"Check path given |{project_path}|")
+        sys.exit()
+    
+#%% Main: handle project.json
+    
+    project_cfg_name = f"project{cfg_id}.json"
+    project_json_path   = os.path.join(project_path, project_cfg_name)
+    project_json_exists = os.path.isfile(project_json_path)
+    if project_json_exists:
+        printG(f"Project Settings found ({project_cfg_name})")
+    elif cfg_id != "":
+        printB(f"Compilation failed as\n" 
+               f"Project Settings ({project_cfg_name}) not-found (and -ID was used)")
+        sys.exit()
+    else:
+        printG(f"Project Settings ({project_cfg_name}) not-found (using default options)")
+    
+    project_settings = dict()
+    
+    if not project_json_exists:
+        project_settings = json.loads(\
+            remove_json_comments(project_json_content))
+    else:
+        with open(project_json_path, 'r') as file:
+            project_settings = json.loads(remove_json_comments(file.read()))
+    
+    #
+    # check if all properties are defined
+    #
+    
+    err_table = [
+        ("use angel-pc" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"use angel-pc\""),
+        ("executable name" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"executable name\""),
+        ("executable name (windows)" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"executable name (windows)\""),
+        ("C standard" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"C standard\""),
+        ("libraries" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"libraries\""),
+        ("warnings" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"warnings\""),
+        ("debug level" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"debug level\""),
+        ("debug flags" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"debug flags\""),
+        ("optimization level" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"optimiaztion level\""),
+        ("additional flags" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"additional flags\""),
+        ("excludes" in project_settings, 
+         f"project{cfg_id}.json -> MISSING PROPERTY \"excludes\"")
+    ]
+    
+    should_exit_prematurely = False
+    for prop in err_table:
+        if not prop[0]:
+            printB(prop[1])
+            should_exit_prematurely = True
+    
+    if should_exit_prematurely:
+        printB(f"Compilation failed as properties are missing from project{cfg_id}.json\n" +
+               f"Use 'angel-bd --json' to see an example project.json file")
+        sys.exit()
+    
+    #
+    #Typechecking
+    #
+    
+    pr__libraries_t    = type(project_settings["libraries"]) is list
+    pr__libraries_sub_t = all(type(item) is str for item in project_settings["libraries"]) if pr__libraries_t else True
+    pr__warnings_t     = type(project_settings["warnings"]) is list
+    pr__warnings_sub_t = all(type(item) is str for item in project_settings["warnings"]) if pr__warnings_t else True
+    pr__debug_flags_t  = type(project_settings["debug flags"]) is list
+    pr__debug_flags_sub_t = all(type(item) is str for item in project_settings["debug flags"]) if pr__debug_flags_t else True
+    pr__add_flags_t    = type(project_settings["additional flags"]) is list
+    pr__add_flags_sub_t = all(type(item) is str for item in project_settings["additional flags"]) if pr__add_flags_t else True     
+    pr__excludes_t    = type(project_settings["excludes"]) is list
+    pr__excludes_sub_t = all(type(item) is str for item in project_settings["additional flags"]) if pr__excludes_t else True
+    
+    err_table = [
+        (type(project_settings["use angel-pc"]) is bool, 
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"use angel-pc\" (expected bool)"),
+        (type(project_settings["executable name"]) is str,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"executable name\" (expected str)"),
+        (type(project_settings["executable name (windows)"]) is str,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"executable name (windows)\" (expected str)"),
+        (type(project_settings["C standard"]) is str,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"C standard\" (expected str)"),
+        (pr__libraries_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"libraries\" (expected list)"),
+        (pr__libraries_sub_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"libraries\" (expected list of str)"),
+        (pr__warnings_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"warnings\" (expected list)"),
+        (pr__warnings_sub_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"warnings\" (expected list of str)"),
+        (type(project_settings["debug level"]) is int,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"debug level\" (expected int)"),
+        (pr__debug_flags_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"debug flags\" (expected list)"),
+        (pr__debug_flags_sub_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"debug flags\" (expected list of str)"),
+        (type(project_settings["optimization level"]) is str,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"optimization level\" (expected str)"),
+        (pr__add_flags_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"additional flags\" (expected list)"),
+        (pr__add_flags_sub_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"additional flags\" (expected list of str)"),
+        (pr__excludes_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for \"excludes\" (expected list)"),
+        (pr__excludes_sub_t,
+         f"project{cfg_id}.json -> INCORRECT TYPE for one or more items in \"excludes\" (expected list of str)")
+    ]
+    
+    should_exit_prematurely = False # redundant but for neatness
+    for prop in err_table:
+        if not prop[0]:
+            printB(prop[1])
+            should_exit_prematurely = True
+    
+    if should_exit_prematurely:
+        printB(f"Compilation failed as properties are of wrong types in project.json\n"
+               f"Use 'angel-bd --json' to see an example project.json file")
+        sys.exit()
+    
+#%% Main: check for source folders
+    
+    #
+    #Checks if project directories are set up correctly
+    #
+    pr_folders_nameonly = get_directories_nameonly(project_path) 
+    contains_src = \
+        "src" in pr_folders_nameonly
+     
+    contains_headers = \
+        "headers" in pr_folders_nameonly
+    
+    contains_libs = \
+        "libraries" in pr_folders_nameonly
+    
+    contains_libheads = \
+        "library_headers" in pr_folders_nameonly
+    
+    contains_all = contains_src  and contains_headers
+    
+    if not contains_libs and verbose:
+        printG("Missing libraries/ folder\n"+
+               "However this is optional\n"+
+               "(angel-bd --help for info)")
+    if not contains_libheads and verbose:
+        printG("Missing library_headers/ folder\n"+
+               "However this is optional\n"+
+               "(angel-bd --help for info)")
+        
+    if not contains_all:
+        err_string = "Build Failed\n"
+        if not contains_src:
+            err_string += "Missing src/ folder\n"
+        if not contains_headers:
+            err_string += "Missing headers/ folder\n"
+        err_string += "(angel-bd --help for info)"
+    
+        printB(err_string)
+        sys.exit()
+    elif verbose:
+        printG("src/, \n" + 
+               "headers/, \n" + 
+               "libraries/ and \n" + 
+               "library_headers/ folders found!\n")
+        
+#%% Main: create lists of source files and folders (+those to be made)
+    #
+    #Get a list of all src and header files
+    #
+    src_files = []
+    header_files = []
+    libheader_files = []
+    
+    src_folderPath = os.path.join(project_path, "src")
+    headers_folderPath = os.path.join(project_path, "headers")
+    lib_folderPath = os.path.join(project_path, "libraries")
+    libhead_folderPath = os.path.join(project_path, "library_headers")
+    
+    src_files = get_all_file_paths(src_folderPath, project_settings["excludes"])
+    header_files = get_all_file_paths(headers_folderPath, project_settings["excludes"])
+    libhead_files = get_all_file_paths(libhead_folderPath, project_settings["excludes"])
+    
+    og_files = src_files + header_files + libhead_files
+    
+    rel_src_files = [os.path.relpath(src_file, src_folderPath) \
+                     for src_file in src_files]
+    rel_header_files = [os.path.relpath(header_file, headers_folderPath) \
+                        for header_file in header_files]
+    rel_libhead_files = [os.path.relpath(libhead_file, libhead_folderPath) \
+                        for libhead_file in libhead_files]
+    rel_files = rel_src_files + rel_header_files + rel_libhead_files
+    
+    
+    #
+    #Create list of src and header generated files
+    #
+    generated_folder = os.path.join(project_path, "generated")
+    generated_src_folder = os.path.join(generated_folder, "src")
+        #we are including library_headers and project headers in one generated-folder
+        #as behaviour is the same 
+    generated_headers_folder = os.path.join(generated_folder, "headers")
+    
+    
+    generated_src_files = [os.path.join(generated_src_folder, src_file) \
+                           for src_file in rel_src_files]
+    generated_header_files = [os.path.join(generated_headers_folder, header_file) \
+                           for header_file in rel_header_files] \
+                           + [os.path.join(generated_headers_folder, libhead_file) \
+                           for libhead_file in rel_libhead_files]
+    generated_files = generated_src_files + generated_header_files
+    
+    
+    #
+    #Create lists of folders to be made
+    #
+    tomake_folders_src = [os.path.dirname(src_file) \
+                          for src_file in generated_src_files] + \
+                         [os.path.dirname(header_file) \
+                          for header_file in generated_header_files]
+    
+    
+    #
+    #Cleans the generated/ folder
+    #
+    if os.path.exists(generated_folder):
+        shutil.rmtree(generated_folder)
+        if verbose:
+            printG("generated/ directory structure cleaned")
+    else:
+        if verbose:
+            printG("generated/ directory allready clean")
+    
+    
+    #
+    #Creates said folders/directories
+    #
+    for a_folder in tomake_folders_src:
+        os.makedirs(a_folder, exist_ok=True)
+    if verbose:
+        printG("generated/ directory structure made")
+    
+    #
+    #Create a dictionary of source to output files
+    #
+    og_to_gen = dict()
+    
+    for i in range(0, len(generated_files)):
+        og_to_gen[og_files[i]] = generated_files[i]
+    
+    #
+    #Create name for the executable
+    #
+    executable_file = ""
+    
+    if os.name == "nt":
+        executable_file = os.path.join(project_path, project_settings["executable name (windows)"])
+    else:
+        executable_file = os.path.join(project_path, project_settings["executable name"])
+    
+#%% Main: check for angel-pc the use it if required
+    #
+    #Checks if angel-pc is installed
+    #
+    if project_settings["use angel-pc"] and not shutil.which("angel-pc"):
+        err_msg = "Build Failed\n"
+        err_msg+= "The Angel PreCompiler is not installed on your system\n"
+        err_msg+= "(or is not setup in you PATH environment variable)\n"
+        err_msg+= "Please reinstall Angel Development Tools and try again!"
+        printB(err_msg)
+        sys.exit()
+    if not project_settings["use angel-pc"]:
+        printG("project.json configured to not use AngelPC")
+    
+    
+    #
+    #Precompiles the files
+    #
+    if project_settings["use angel-pc"] == True:
+        #print()
+        commands_to_execute = [ "angel-pc " + og_file + " -o " + og_to_gen[og_file] \
+                                for og_file in og_files]
+        printG("Precompiling with Angel PreCompiler")
+        i = 0
+        for command in commands_to_execute:
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            pc_out = result.stdout
+            if pc_out.replace("\n", "").replace(" ", "") != "":
+                printG(f"{pc_out}") 
+            if verbose:
+                printG(f"(----Precompiled {og_files[i]} to {og_to_gen[og_files[i]]})")
+            i+=1
+        #print()
+    else:
+        printG("Precompilation skipped")
+        for og_file in og_files:
+            shutil.copyfile(og_file, og_to_gen[og_file])
+            if verbose:
+                printG(f"(----Copied {og_file} to {og_to_gen[og_file]})")
+    
+    
+#%% Main: check for gcc and then compile using it
+    #
+    #Checks if gcc is installed
+    #
+    if not shutil.which("gcc"):
+        err_msg = "Build Failed\n"
+        err_msg+= "GCC is not installed or installed incorrectly\n"
+        err_msg+= "Please (re)install GCC!{Color.RESET}"
+        printB(err_msg)
+        sys.exit()
+    
+    #
+    #Create the gcc command we shall execute
+    #
+    compile_command = "gcc -I"
+    compile_command += generated_headers_folder
+    compile_command += " -L"
+    compile_command += lib_folderPath
+    compile_command += " -std="
+    compile_command += project_settings["C standard"]
+    
+    for a_lib in project_settings["libraries"]:
+        compile_command += " -l"
+        compile_command += a_lib
+    
+    for a_warning in project_settings["warnings"]:
+        compile_command += " -W"
+        compile_command += a_warning
+    
+    compile_command += " -g"
+    compile_command += str(project_settings["debug level"])
+    
+    for a_debug_flag in project_settings["debug flags"]:
+        compile_command += " -g"
+        compile_command += a_debug_flag
+    
+    compile_command += " -O"
+    compile_command += project_settings["optimization level"]
+    
+    for a_flag in project_settings["additional flags"]:
+        compile_command += " -"
+        compile_command += a_flag
+    
+    compile_command += " -o "
+    compile_command += executable_file
+    compile_command += " "
+    for the_src_file in generated_src_files:
+        compile_command += the_src_file + " "
+    
+    #print(compile_command)
+    
+    #
+    #Remove old executable
+    #
+    if os.path.exists(executable_file):
+        if verbose:
+            printG("Deleting old executable file")
+        os.remove(executable_file)
+    
+    #
+    #Compile
+    #
+    
+    printG("Calling GCC to compile")
+    result = subprocess.run(compile_command, shell=True, capture_output=True, text=True)
+    
+    if result.stderr.strip(" ") != "":
+        if result.stdout.strip(" ") != "":
+            print_GCC_G(result.stdout)
+        print_GCC_B(result.stderr)
+    else:
+        print_GCC_G(result.stdout)
+    #
+    #Summary
+    #
+    
+    print("")
+    if os.path.exists(executable_file):
+        printG("Compilation appears to have been a SUCCESS!")
+    else:
+        printB("Compilation appears to have FAILED!")
 
-for a_lib in project_settings["libraries"]:
-	compile_command += " -l"
-	compile_command += a_lib
 
-for a_warning in project_settings["warnings"]:
-	compile_command += " -W"
-	compile_command += a_warning
-
-compile_command += " -g"
-compile_command += str(project_settings["debug level"])
-
-for a_debug_flag in project_settings["debug flags"]:
-	compile_command += " -g"
-	compile_command += a_debug_flag
-
-compile_command += " -O"
-compile_command += project_settings["optimization level"]
-
-for a_flag in project_settings["additional flags"]:
-	compile_command += " -"
-	compile_command += a_flag
-
-compile_command += " -o "
-compile_command += executable_file
-compile_command += " "
-for the_src_file in generated_src_files:
-	compile_command += the_src_file + " "
-
-#print(compile_command)
-
-#
-#Remove old executable
-#
-if os.path.exists(executable_file):
-	if verbose:
-		print(f"{Color.CYAN}AngelBD{Color.RESET} : Deleting old executable file")
-	os.remove(executable_file)
-
-#
-#Compile
-#
-
-print(f"{Color.CYAN}AngelBD{Color.RESET} : Calling GCC to compile")
-result = subprocess.run(compile_command, shell=True, capture_output=True, text=True)
-
-print("")
-
-print("GCC Output :\n", result.stdout)
-
-print("")
-
-print(f"GCC Error  :\n{Color.RED}", result.stderr + f"{Color.RESET}")
-
-#
-#Summary
-#
-
-print("")
-if os.path.exists(executable_file):
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : Compilation appears to have been a SUCCESS!")
-else:
-	print(f"{Color.CYAN}AngelBD{Color.RESET} : Compilation appears to have FAILED!")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#%% main
+MAIN()
