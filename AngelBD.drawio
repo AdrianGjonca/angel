@@ -1,0 +1,181 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0" version="26.0.10">
+  <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
+    <mxGraphModel dx="2238" dy="1359" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-1" value="Angel BuilDer started with valid command line args" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry width="180" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="kCWSSXeHFQ03dD5S37jI-1" target="kCWSSXeHFQ03dD5S37jI-4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="60" y="80" as="sourcePoint" />
+            <mxPoint x="97" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-4" value="Getting configurations" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="30" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-7" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="200" as="sourcePoint" />
+            <mxPoint x="89.99999999999989" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-10" value="Creates lists of source files and those to be made. Creates ./generated folder and nesteds" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="30" y="250" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-11" value="Uses Angel PreCompiler" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="30" y="380" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-12" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" target="kCWSSXeHFQ03dD5S37jI-11">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="340" as="sourcePoint" />
+            <mxPoint x="140" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-14" value="Precompile sources and place in directory structure" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="220" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-15" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="150" y="420" as="sourcePoint" />
+            <mxPoint x="220" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-16" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="kCWSSXeHFQ03dD5S37jI-15">
+          <mxGeometry x="0.4059" y="-3" relative="1" as="geometry">
+            <mxPoint x="-19" y="-3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-17" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="30" y="420" as="sourcePoint" />
+            <mxPoint x="-40" y="420" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-20" value="No" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="kCWSSXeHFQ03dD5S37jI-17">
+          <mxGeometry x="0.3754" y="-1" relative="1" as="geometry">
+            <mxPoint x="18" y="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-18" value="&lt;div&gt;Copies sources and place in directory structure&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="-160" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-21" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="90" y="460" as="sourcePoint" />
+            <mxPoint x="90" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-22" value="Uses Angel DependancyManager" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="10" y="510" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-23" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" target="kCWSSXeHFQ03dD5S37jI-27">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="170" y="550" as="sourcePoint" />
+            <mxPoint x="220" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-24" value="Yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="kCWSSXeHFQ03dD5S37jI-23">
+          <mxGeometry x="0.3379" y="2" relative="1" as="geometry">
+            <mxPoint x="-13" y="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-25" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" target="kCWSSXeHFQ03dD5S37jI-43">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="10" y="550" as="sourcePoint" />
+            <mxPoint x="-40" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-26" value="&lt;div&gt;No&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="kCWSSXeHFQ03dD5S37jI-25">
+          <mxGeometry x="-0.0124" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-28" value="If angel-pc is not present we fail build" style="shape=callout;whiteSpace=wrap;html=1;perimeter=calloutPerimeter;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="240" y="310" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-43" value="Compiled with GCC&lt;br&gt;with -L$projectpath/libraries for static and non-system-installed shared libraries." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="-480" y="520" width="360" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-44" value="As of yet unimplemented" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="-100" y="475" width="540" height="915" as="geometry">
+            <mxRectangle x="-100" y="475" width="40" height="160" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-27" value="Create an empty list for all dependancies" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="kCWSSXeHFQ03dD5S37jI-44">
+          <mxGeometry x="350" y="45" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-29" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="kCWSSXeHFQ03dD5S37jI-44">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="105" as="sourcePoint" />
+            <mxPoint x="410" y="135" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-30" value="&lt;div&gt;Analyse C code for what base libraries are needed, e.g.:&lt;br&gt;libc&lt;/div&gt;&lt;div&gt;libm&lt;/div&gt;&lt;div&gt;libgcc&lt;/div&gt;&lt;div&gt;&lt;i&gt;(libpthreads)&lt;/i&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;ect&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="kCWSSXeHFQ03dD5S37jI-44">
+          <mxGeometry x="350" y="135" width="120" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-33" value="Add all specified libraries to the list, e.g.: libsdl" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="kCWSSXeHFQ03dD5S37jI-44">
+          <mxGeometry x="350" y="295" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-34" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="kCWSSXeHFQ03dD5S37jI-44" target="kCWSSXeHFQ03dD5S37jI-33">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="265" as="sourcePoint" />
+            <mxPoint x="460" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-36" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="kCWSSXeHFQ03dD5S37jI-44">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="355" as="sourcePoint" />
+            <mxPoint x="410" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-37" value="Find libraries in path and create a dictionary on them" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="kCWSSXeHFQ03dD5S37jI-44">
+          <mxGeometry x="350" y="385" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-39" value="In future we can do nix integration but for now we just fail build if libraries not found" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="kCWSSXeHFQ03dD5S37jI-44">
+          <mxGeometry x="350" y="475" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-40" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="kCWSSXeHFQ03dD5S37jI-44" target="kCWSSXeHFQ03dD5S37jI-39">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="445" as="sourcePoint" />
+            <mxPoint x="460" y="395" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-41" value="Create symbolic links in ./libraries linking to all the required libraries" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="kCWSSXeHFQ03dD5S37jI-44">
+          <mxGeometry x="350" y="565" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-42" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="kCWSSXeHFQ03dD5S37jI-44" target="kCWSSXeHFQ03dD5S37jI-41">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="410" y="535" as="sourcePoint" />
+            <mxPoint x="460" y="485" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-52" value="Implemented in angel-dm" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="kCWSSXeHFQ03dD5S37jI-44">
+          <mxGeometry x="330" y="10" width="160" height="880" as="geometry">
+            <mxRectangle x="330" y="10" width="180" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-53" value="&lt;div&gt;Set library path to&amp;nbsp;&lt;/div&gt;&lt;div&gt;./libraries exclusively&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="kCWSSXeHFQ03dD5S37jI-52">
+          <mxGeometry x="20" y="645" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-54" value="Compiled with GCC&lt;br&gt;&lt;div&gt;(with -L$projectpath/potentially added [may be needed for static libs, idk])&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="kCWSSXeHFQ03dD5S37jI-52">
+          <mxGeometry x="20" y="755" width="120" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-56" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="kCWSSXeHFQ03dD5S37jI-52" target="kCWSSXeHFQ03dD5S37jI-54">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="80" y="705" as="sourcePoint" />
+            <mxPoint x="130" y="655" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kCWSSXeHFQ03dD5S37jI-57" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="kCWSSXeHFQ03dD5S37jI-52" target="kCWSSXeHFQ03dD5S37jI-53">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="80" y="615" as="sourcePoint" />
+            <mxPoint x="130" y="565" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
