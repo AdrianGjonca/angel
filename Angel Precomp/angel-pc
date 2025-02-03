@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
+#%% Preamble
 import re
 import sys
+import os
 
 #I need to find a windows solution unfortunately
 class Color:
@@ -16,9 +18,80 @@ class Color:
     CYAN = "\033[36m"
     WHITE = "\033[37m"
 
-def erPrint(text):
+#%% Console Functions
+PROGRAM_NAME = "AngelBD"
+PROGRAM_CLCD = Color.CYAN
+
+def vlen(s: str) -> int:
+    clean_string = s.replace("\033[0m", "")\
+                    .replace("\033[1m", "")\
+                    .replace("\033[4m", "")\
+                    .replace("\033[31m", "")\
+                    .replace("\033[32m", "")\
+                    .replace("\033[33m", "")\
+                    .replace("\033[34m", "")\
+                    .replace("\033[35m", "")\
+                    .replace("\033[36m", "")\
+                    .replace("\033[37m", "")
+    return len(clean_string)
+
+def __split_string(s: str, n: int) -> list[str]:
+    chunks = []
+    buffer = ""
+    in_escape = False
+    for a in s:
+        if in_escape:
+            buffer = buffer + a
+            if a == "m":
+                in_escape = False
+        else:
+            buffer = buffer + a
+            if a == "\033" or a == "\x1b":
+                in_escape = True
+            if vlen(buffer) > n and not in_escape:
+                chunks.append(buffer)
+                buffer = ""
+    if buffer != "":
+        chunks.append(buffer)
+    return chunks
+
+def __print(text: str, seperator: str, name: str, clcd: str):
+    text_lines = text.split("\n")
+    
+    prefix = f"{clcd}{name}{Color.RESET} {seperator} "
+    offset = len(PROGRAM_NAME) + 3 #+3 for " : "
+    
+    cns_size = os.get_terminal_size()
+    cns_width = cns_size.columns
+    width = cns_width - offset - 1
+    
+    shortened_lines = []
+    for line in text_lines:
+        shortened_lines.extend(__split_string(line, width))
+    
+    if len(shortened_lines) == 0:
+        print(prefix)
+    elif len(shortened_lines) == 1:
+        print(prefix + shortened_lines[0])
+    else:
+        print(prefix + shortened_lines[0])
+        _prefix = " " * offset
+        for line in shortened_lines[1:]:
+            print(_prefix + line)
+
+def _print(text: str, seperator: str):
+    __print(text, seperator, PROGRAM_NAME, PROGRAM_CLCD)
+
+def printG(text: str):
+    _print(text, ":")
+
+def printB(text: str):
+    _print(f"{Color.RED}{text}{Color.RESET}", f"{Color.RED}!{Color.RESET}")
+    
+def erPrint(text): #TODO remove
 	print(Color.BOLD + Color.RED + text + Color.RESET)
 
+#%% Beginnings
 if len(sys.argv) < 2:
     erPrint("Angel PreCompiler cannot work if you don't give me a source file :(")
     sys.exit(2)
@@ -48,7 +121,7 @@ if ("-h" in sys.argv) or ("--help" in sys.argv):
     print("")
     sys.exit(0)
 
-
+#%% Precompiler Functions
 ################################################
 ##
 ## 
@@ -78,7 +151,6 @@ def is_whitespc(character):
 # Precompiles the namespaces
 # str::cpy -> str_0cpy
 # Designed to be the same length to make it understandable
-# REMEMBER TO BE CONSISE, NO MORE THAT 31 CHARS ARE SIGNIFICANT IN C.
 ###
 # code : string -> the original code
 # ~return~ : string -> the resultant code
@@ -95,6 +167,21 @@ def handle_namespaces(code):
             return re.sub(r'(\b\w+)::', r'\1_0', part)
     
     return re.sub(pattern, replacer, code, flags=re.DOTALL)
+
+##
+# for ...$`str`::$~repeat(a)~etc(a,b,c)~whatever()$...
+# ret ...`str`::repeat(a)@`str`::etc(a,b,c)@`str`::whatever()...
+##
+# TODO
+##
+def handle_prefixed_chain(code):
+    
+    # for : `str`::$~repeat(a)~etc(a,b,c)~whatever()
+    # ret : `str`::repeat(a)@`str`::etc(a,b,c)@`str`::whatever()
+    def convert_section(section, Dlr2):
+        #TODO ALL THIS STUFF
+        pass
+    #TODO ALL THIS STUFF
 
 ###
 # Handles chained calls - e.g. mystring@tocapital()@replace("a", "b")
@@ -569,34 +656,28 @@ def handle_code(code):
     transformed_code = handle_chains(transformed_code)
     return transformed_code
 
-################################################
-##
-## 
-## Main program
-## 
-##
-################################################
+#%% Main
+def MAIN():
+    if should_outputToFile:
+        if len(sys.argv) < 4:
+            erPrint("Angel PreCompiler cannot output to file if you don't tell me where to output :(")
+            sys.exit(1)
+    
+    try:
+        with open(filename, 'r') as file:
+            og_code = file.read()
+            transformed_code = handle_code(og_code)
+            if should_outputToFile:
+                with open(sys.argv[len(sys.argv) - 1], "w") as fileout:
+                    print(transformed_code, file=fileout)
+            else:
+                print(transformed_code)
+    except FileNotFoundError:
+        erPrint("AngelPC : |{filename}| ! The file does not exist!")
+        sys.exit(2)
+    except IOError:
+        erPrint("AngelPC : |{filename}| ! An error occurred while loading the file!")
+        sys.exit(5)
 
-if should_outputToFile:
-    if len(sys.argv) < 4:
-        erPrint("Angel PreCompiler cannot output to file if you don't tell me where to output :(")
-        sys.exit(1)
-
-try:
-    with open(filename, 'r') as file:
-        og_code = file.read()
-        transformed_code = handle_code(og_code)
-        if should_outputToFile:
-            with open(sys.argv[len(sys.argv) - 1], "w") as fileout:
-                print(transformed_code, file=fileout)
-        else:
-            print(transformed_code)
-except FileNotFoundError:
-    erPrint("AngelPC : |{filename}| ! The file does not exist!")
-    sys.exit(2)
-except IOError:
-    erPrint("AngelPC : |{filename}| ! An error occurred while loading the file!")
-    sys.exit(5)
-
-
-
+#%% MAIN
+MAIN()
