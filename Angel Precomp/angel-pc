@@ -170,18 +170,72 @@ def handle_namespaces(code):
 
 ##
 # for ...$`str`::$~repeat(a)~etc(a,b,c)~whatever()$...
-# ret ...`str`::repeat(a)@`str`::etc(a,b,c)@`str`::whatever()...
+# ret ...@`str`::repeat(a)@`str`::etc(a,b,c)@`str`::whatever()...
 ##
 # TODO
 ##
-def handle_prefixed_chain(code):
+def handle_prefixed_chain(code: str):
     
     # for : `str`::$~repeat(a)~etc(a,b,c)~whatever()
     # ret : `str`::repeat(a)@`str`::etc(a,b,c)@`str`::whatever()
-    def convert_section(section, Dlr2):
-        #TODO ALL THIS STUFF
-        pass
-    #TODO ALL THIS STUFF
+    
+    
+    def convert_section(section: str):
+        dollar_loc = section.index("$")
+        pre_text = section[:dollar_loc]
+        post_text = section[dollar_loc+1:]
+        print(f"PRE {pre_text}")
+        print(f"POST {post_text}")
+        
+        if not post_text.startswith("~"):
+            pass #HANDLE ERROR
+        
+        tilde_locs = []
+        i = 0
+        instr = False
+        inesc = False
+        inchr = False
+        for c in post_text:
+            if not instr and not inchr:
+                print(c, end="")
+            
+            if not instr and not inchr and c == "~":
+                tilde_locs.append(i)
+            elif not instr and not inchr and c == "\"":
+                instr = True
+            elif not instr and not inchr and c == "\'":
+                inchr = True
+            elif instr and c == "\\":
+                inesc = True
+            elif inchr and c == "\\":
+                inesc = True
+            elif inesc:
+                inesc = False
+            elif not inesc and instr and c == "\"":
+                instr = False
+            elif not inesc and inchr and c == "\'":
+                inchr = False
+            i += 1
+        print()
+        print(tilde_locs)
+        
+        statements = []
+        for i in range(len(tilde_locs) - 1):
+            statements.append(post_text[tilde_locs[i] + 1 : tilde_locs[i+1]])
+        statements.append(post_text[tilde_locs[len(tilde_locs) - 1] + 1 :])
+        print(statements)
+        
+        if not statements:
+            pass #HANDLE ERROR
+        
+        new_statements = [
+            "@" + pre_text + stmt for stmt in statements 
+            ]
+        print(new_statements)
+        
+        print("".join(new_statements))
+        #Finalize the return
+    convert_section(code)
 
 ###
 # Handles chained calls - e.g. mystring@tocapital()@replace("a", "b")
@@ -680,4 +734,5 @@ def MAIN():
         sys.exit(5)
 
 #%% MAIN
-MAIN()
+#MAIN()
+handle_prefixed_chain("str`::$~repeat(a)~etc(\"~avd\",'~',\"asdas~\",'\\\'')~whatever()")
